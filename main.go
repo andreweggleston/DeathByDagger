@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"github.com/andreweggleston/GoSeniorAssassin/inside/version"
+	"github.com/andreweggleston/DeathByDagger/inside/version"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
