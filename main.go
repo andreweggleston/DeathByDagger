@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/andreweggleston/GoSeniorAssassin/inside/version"
 	"github.com/sirupsen/logrus"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -34,6 +35,15 @@ func main() {
 	logrus.Debug("Commit: ", version.GitCommit)
 	logrus.Debug("Branch: ", version.GitBranch)
 	logrus.Debug("Build date: ", version.BuildDate)
+
+	//initialize controller templates
+
+	//initialize db and set max conns
+	//do migrations
+
+	httpMux := http.NewServeMux()
+	//setup routes
+	//do handlers
 
 	sig := make(chan os.Signal, 1)
 
