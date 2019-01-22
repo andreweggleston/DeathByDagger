@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/inside/version"
+	"github.com/andreweggleston/DeathByDagger/routes"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
@@ -42,7 +43,7 @@ func main() {
 	//do migrations
 
 	httpMux := http.NewServeMux()
-	//setup routes
+	routes.SetupHTTP(httpMux)
 	//do handlers
 
 	sig := make(chan os.Signal, 1)

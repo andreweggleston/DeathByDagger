@@ -13,3 +13,9 @@ type route struct {
 var httpRoutes = []route{
 	{"/", controllers.MainHandler},
 }
+
+func SetupHTTP(mux *http.ServeMux) {
+	for _, httpRoute := range httpRoutes {
+		mux.HandleFunc(httpRoute.pattern, httpRoute.handler)
+	}
+}
