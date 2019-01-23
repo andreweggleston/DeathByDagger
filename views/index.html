@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <body>
+
+    {{if .LoggedIn}}
+
+    <a href="/logout">Logout</a> <br>
+    Logged in as {{.Player.Name}} ({{.Player.Username}}) <br><br>
+    Build Date: {{.BuildDate}} <br>
+    Built From <b>{{.GitCommit}}</b> on branch <b>{{.GitBranch}}</b><br>
+    {{.BuildInfo}}
+
+
+    {{else}}
+
+    <a href='/login'>Login with SSO</a> <br><br>
+
+    {{end}}
+  Build Date: {{.BuildDate}} <br>
+  Built From <b>{{.GitCommit}}</b> on branch <b>{{.GitBranch}}</b><br>
+  {{.BuildInfo}}
+
+    <br>
+
+  </body>
+</html>

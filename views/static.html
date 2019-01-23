@@ -1,0 +1,103 @@
+<html>
+<head>
+<script src="https://cdn.rawgit.com/TF2Stadium/wsevent.js/master/wsevent.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+<script>
+
+var createBox = function(so, messageName, messageFields) {
+    html = "<div style='border: 1px black solid'><h3>"+messageName+"</h3>";
+    messageFields.forEach(function(field) {
+      html += field;
+      var id = messageName + "_" + field;
+      html += " <input type='text' id='"+id+"'> <br/>"
+    });
+
+    html += "<a href='#' id='submit_"+messageName+"'>Submit</a></div>";
+
+    $("#message-tests").append(html);
+
+    $("#submit_"+messageName).click(function() {
+      params = {};
+      messageFields.forEach(function(field) {
+        var val = $("#"+messageName+"_"+field).val();
+        if ((field.toLowerCase() !== "username" && field.endsWith("id")) || field == "role" || field == "value") {
+          val = parseInt(val);
+        }
+        params[field] = val;
+      });
+      params["request"] = messageName
+      console.log("sent"+JSON.stringify(params))
+      so.Emit(params, function(response) {
+        if (response != null) {
+          console.log("Response to "+messageName+":");
+          console.log(response);
+        }
+      })
+    });
+}
+
+var getCookie = function C(k){return(document.cookie.match('(^|; )'+k+'=([^;]*)')||0)[2]}
+
+var url = 'ws://' + window.location.hostname + ':' + window.location.port + '/websocket/'
+
+var extract = function(obj) {
+  return obj["request"]
+}
+var opts = {}
+opts.extractor = extract;
+
+var so = new Socket(url, opts)
+
+so.On("asdf", function() {
+  console.log("asdf received");
+})
+
+function sendAuthTest() {
+  so.Emit({request: "authenticationTest"}, function(s){
+    alert(JSON.parse(s))
+  })
+}
+
+so.On("sendNotification", function(s) {
+  toastr.info(s);
+});
+
+so.On("playerSettings", function(s) {
+  console.log("Received playerSettings")
+  console.log(s)
+})
+
+so.On("playerProfile", function(s) {
+  console.log("Received playerProfile")
+  console.log(s)
+})
+
+so.On("socketInitialized", function(s){
+  console.log("Socket Initialized")
+})
+$(function() {
+  createBox(so, "playerSettingsSet", ["key", "value"]);
+  createBox(so, "playerSettingsGet", ["key"]);
+  createBox(so, "playerProfile", ["username"]);
+  createBox(so, "getConstant", ["constant"]);
+  createBox(so, "getSocketInfo", []);
+
+});
+
+</script>
+</head>
+<body style="position: relative">
+  <button onclick="sendAuthTest()">Test authentication</button>
+  <a href="/startLogin"> Login </a>
+  <a href="/logout"> Logout </a>
+
+  <div id="message-tests"></div>
+
+  <div id="lobby-list" style="position: absolute; width: 500px; top: 0px;
+  right: 0px; background:white; border: 1px black solid; min-height: 500px;
+  white-space: pre; "></div>
+
+</body>
+</html>
