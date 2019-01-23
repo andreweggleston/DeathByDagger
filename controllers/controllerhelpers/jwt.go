@@ -4,9 +4,11 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
+	"github.com/andreweggleston/DeathByDagger/models/player"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"time"
 )
 
 var (
@@ -27,8 +29,23 @@ func init() {
 	}
 }
 
-func NewToken() { //todo implement player
+func NewToken(player *player.Player) string { //todo implement player
+	token := jwt.New(jwt.SigningMethodHS512)
+	token.Claims = DaggerClaims{
+		PlayerID:  		player.ID,
+		CSHUsername:	player.CSHUsername,
+		Role: 			player.Role,
+		IssuedAt: 		time.Now().Unix(),
+		Issuer: 		config.Constants.PublicAddress,
 
+	}
+
+	str, err := token.SignedString([]byte(signingKey))
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	return str
 }
 
 func verifyToken(token *jwt.Token) (interface{}, error) {
@@ -45,10 +62,11 @@ func GetToken(r *http.Request) (*jwt.Token, error) {
 		return nil, err
 	}
 
-	token, err := jwt.ParseWithClaims(cookie.Value, &DaggerClaims{},verifyToken)
+	token, err := jwt.ParseWithClaims(cookie.Value, &DaggerClaims{}, verifyToken)
 	return token, err
 }
 
-func GetPlayer(token *jwt.Token) /* *player.Player */ {
-	//TODO
+func GetPlayer(token *jwt.Token) *player.Player {
+	player, _ := player.GetPlayerByID(token.Claims.(*DaggerClaims).PlayerID) //error is ignored because we know player exists
+	return player
 }

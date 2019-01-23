@@ -41,7 +41,7 @@ type GlobalData struct {
 	Announcement string
 }
 
-func NewPlayer(cshusername string) *Player {
+func NewPlayer(cshusername string) (*Player, error) {
 	player := &Player{CSHUsername: cshusername, Kills: 0}
 
 	//check if admin todo
@@ -50,7 +50,7 @@ func NewPlayer(cshusername string) *Player {
 
 	db.DB.Model(&Player{}).Last(last)
 
-	return player
+	return player, nil
 }
 
 

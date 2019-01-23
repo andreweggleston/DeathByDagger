@@ -5,8 +5,11 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"github.com/andreweggleston/DeathByDagger/config"
+	"github.com/andreweggleston/DeathByDagger/controllers/socket"
 	"github.com/andreweggleston/DeathByDagger/inside/version"
 	"github.com/andreweggleston/DeathByDagger/routes"
+	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
@@ -45,6 +48,13 @@ func main() {
 	httpMux := http.NewServeMux()
 	routes.SetupHTTP(httpMux)
 	//do handlers
+	socket.RegisterHandlers()
+
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:		config.Constants.AllowedOrigins,
+		AllowedMethods:		[]string{"GET", "POST", "DELETE", "OPTIONS"},
+		AllowCredentials:	true,
+	}).Handler(httpMux)
 
 	sig := make(chan os.Signal, 1)
 
@@ -55,6 +65,8 @@ func main() {
 		shutdown()
 		os.Exit(0)
 	}()
+
+	logrus.Fatal(http.ListenAndServe(config.Constants.ListenAddress, corsHandler))
 
 }
 

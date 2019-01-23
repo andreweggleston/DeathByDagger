@@ -12,6 +12,7 @@ type route struct {
 
 var httpRoutes = []route{
 	{"/", controllers.MainHandler},
+	{"/websocket/", controllers.SocketHandler},
 }
 
 func SetupHTTP(mux *http.ServeMux) {
