@@ -142,12 +142,3 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, config.Constants.LoginRedirectPath, 303)
 }
-
-func ParseBody(body []byte) *User {
-	var s = new(User)
-	err := json.Unmarshal(body, &s)
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	return s
-}

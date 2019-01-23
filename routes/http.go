@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/andreweggleston/DeathByDagger/controllers"
+	"github.com/andreweggleston/DeathByDagger/controllers/login"
 	"net/http"
 )
 
@@ -13,6 +14,10 @@ type route struct {
 var httpRoutes = []route{
 	{"/", controllers.MainHandler},
 	{"/websocket/", controllers.SocketHandler},
+
+	{"/login", login.LoginHandler},
+	{"/auth", login.CallbackHandler},
+	{"/logout", login.LogoutHandler},
 }
 
 func SetupHTTP(mux *http.ServeMux) {
