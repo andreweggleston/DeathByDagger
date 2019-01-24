@@ -18,7 +18,7 @@ type InteractionHandler struct {
 }
 
 
-func (h InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
+func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
 
 	spew.Dump(h)
 
