@@ -41,7 +41,7 @@ func (s *SlackListener) ListenAndResponse() {
 
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
-	logrus.Debug("Incoming message: %v", ev)
+	logrus.Debug("Incoming message: ", ev)
 
 	if !strings.HasPrefix(ev.Msg.Text, fmt.Sprintf("<@%s> ", s.BotID)) {
 		return nil
