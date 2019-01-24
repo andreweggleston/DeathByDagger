@@ -82,6 +82,8 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logrus.Fatal(err)
 	}
+	logrus.Info(s)
+	logrus.Info(s.Username)
 
 	user := s
 
