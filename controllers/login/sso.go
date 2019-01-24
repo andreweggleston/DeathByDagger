@@ -13,7 +13,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
@@ -76,10 +75,11 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	data, _ := ioutil.ReadAll(resp.Body)
-	log.Println(string(data))
-	log.Println("weengie")
+	logrus.Info(string(data))
+	logrus.Info("weengie")
 	var s = new(UserInfo)
 	err = json.Unmarshal(data, &s)
+	logrus.Info(s)
 	if err != nil {
 		logrus.Fatal(err)
 	}
