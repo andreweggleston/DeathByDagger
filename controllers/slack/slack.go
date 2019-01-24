@@ -7,7 +7,7 @@ import (
 )
 
 func ListenAndResponse() {
-	api := slack.New(config.Constants.SlackToken)
+	api := slack.New(config.Constants.SlackToken, slack.OptionDebug(true))
 
 	rtm := api.NewRTM()
 	go rtm.ManageConnection()
