@@ -4,6 +4,7 @@ import (
 	"github.com/andreweggleston/DeathByDagger/controllers"
 	"github.com/andreweggleston/DeathByDagger/controllers/login"
 	slackhelper "github.com/andreweggleston/DeathByDagger/controllers/slack"
+	"github.com/davecgh/go-spew/spew"
 	"net/http"
 )
 
@@ -29,6 +30,7 @@ func SetupHTTP(mux *http.ServeMux) {
 	for _, httpRoute := range httpRoutes {
 		mux.HandleFunc(httpRoute.pattern, httpRoute.handler)
 	}
+	spew.Dump(InteractionHandler)
 }
 
 func SetupSlack(listener *slackhelper.SlackListener){
