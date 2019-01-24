@@ -29,7 +29,7 @@ func init() {
 	}
 }
 
-func NewToken(player *player.Player) string { //todo implement player
+func NewToken(player *player.Player) string {
 	token := jwt.New(jwt.SigningMethodHS512)
 	token.Claims = DaggerClaims{
 		PlayerID:  		player.ID,
