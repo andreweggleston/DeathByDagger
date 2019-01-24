@@ -64,10 +64,10 @@ func main() {
 
 	go slackListener.ListenAndResponse()
 
-	routes.SetupSlack(slackListener)
 
 	httpMux := http.NewServeMux()
-	routes.SetupHTTP(httpMux)
+	routes.SetupHTTP(httpMux, slackListener
+	)
 	socket.RegisterHandlers()
 
 	corsHandler := cors.New(cors.Options{
