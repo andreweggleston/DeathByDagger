@@ -77,6 +77,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, _ := ioutil.ReadAll(resp.Body)
 	log.Println(string(data))
+	log.Println("weengie")
 	var s = new(UserInfo)
 	err = json.Unmarshal(data, &s)
 	if err != nil {

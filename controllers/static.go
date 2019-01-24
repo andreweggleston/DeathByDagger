@@ -27,7 +27,6 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		p = controllerhelpers.GetPlayer(tok)
 	} else {
-		fmt.Printf("error while getting token")
 		logrus.Error(err)
 	}
 
