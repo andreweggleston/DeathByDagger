@@ -3,6 +3,8 @@ package controllerhelpers
 import (
 	"errors"
 	"github.com/andreweggleston/DeathByDagger/helpers/authority"
+	db "github.com/andreweggleston/DeathByDagger/databaseDagger"
+	"github.com/andreweggleston/DeathByDagger/models/player"
 )
 
 type DaggerClaims struct {
@@ -15,7 +17,7 @@ type DaggerClaims struct {
 
 func playerExists(id uint, CSHUsername string) bool {
 	var count int
-	//TODO: find in DB where id is id and csh_username is CSHUsername
+	db.DB.Model(&player.Player{}).Where("id = ? AND csh_username = ?", id, CSHUsername).Count(&count)
 	return count != 0
 }
 
