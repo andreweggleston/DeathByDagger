@@ -2,6 +2,7 @@ package slack
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -40,6 +41,7 @@ func (s *SlackListener) ListenAndResponse() {
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	logrus.Debugf("Incoming message: %v", ev)
+	spew.Dump(ev)
 
 
 	// Parse message
