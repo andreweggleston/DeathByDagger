@@ -71,6 +71,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText("You've been marked for death!", false), slack.MsgOptionAttachments(attachment)); err != nil {
 			return fmt.Errorf("failed to post message: %s", err)
 		}
+
 	}
 
 	if len(m) != 2 || m[0] != "kill"{

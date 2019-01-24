@@ -49,4 +49,24 @@ func InteractionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	spew.Dump(message)
+
+	if message.CallbackID == "killConfirm" {
+
+		originalmessage := message.OriginalMessage
+
+		switch message.ActionCallback.Actions[0].Value {
+		case "confirm":
+			originalmessage.Text = "You're dead! Sorry!"
+			originalmessage.Attachments = []slack.Attachment{}
+
+		case "deny":
+			originalmessage.Text = "You've denied your mark. Keep playing!"
+			originalmessage.Attachments = []slack.Attachment{}
+		}
+
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(&originalmessage)
+		return
+	}
 }
