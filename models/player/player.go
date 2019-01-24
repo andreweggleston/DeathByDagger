@@ -172,3 +172,8 @@ func (player *Player) UpdatePlayerData() error {
 	}
 	return nil
 }
+
+func (player *Player) SetSlackUsername(username string) {
+	defer player.Save()
+	player.SlackUsername = username
+}
