@@ -13,7 +13,7 @@ type route struct {
 	handler http.HandlerFunc
 }
 
-var InteractionHandler slackhelper.InteractionHandler
+var InteractionHandler *slackhelper.InteractionHandler
 
 var httpRoutes = []route{
 	{"/", controllers.MainHandler},
@@ -34,7 +34,7 @@ func SetupHTTP(mux *http.ServeMux) {
 }
 
 func SetupSlack(listener *slackhelper.SlackListener){
-	InteractionHandler = slackhelper.InteractionHandler{
+	InteractionHandler = &slackhelper.InteractionHandler{
 		S: listener,
 	}
 }
