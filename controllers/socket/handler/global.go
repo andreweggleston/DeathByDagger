@@ -2,9 +2,9 @@ package handler
 
 import (
 	"errors"
-	"github.com/andreweggleston/DeathByDagger/helpers/wsevent"
-	"github.com/andreweggleston/GoSeniorAssassin/controllers/broadcaster"
+	"github.com/andreweggleston/DeathByDagger/controllers/broadcaster"
 	chelpers "github.com/andreweggleston/DeathByDagger/controllers/controllerhelpers"
+	"github.com/andreweggleston/DeathByDagger/helpers/wsevent"
 	"github.com/bitly/go-simplejson"
 )
 
@@ -21,7 +21,7 @@ func (Global) GetConstant(so *wsevent.Client, args struct {
 	output := simplejson.New()
 	switch args.Constant {
 	default:
-		return errors.New("Unkown constant.")
+		return errors.New("unknown constant")
 	}
 
 	return newResponse(output)

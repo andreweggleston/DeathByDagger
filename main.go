@@ -24,7 +24,7 @@ import (
 
 var (
 	flagGen = flag.Bool("genkey", false, "write a 32bit key for encrypting cookies, then exit")
-	dbMaxopen = flag.Int("db-maxopen", 80, "maximum number of open databaseAssassin connections allowed.")
+	dbMaxopen = flag.Int("db-maxopen", 80, "maximum number of open database connections allowed.")
 )
 
 func main() {
