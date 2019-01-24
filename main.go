@@ -62,11 +62,13 @@ func main() {
 		BotID:  config.Constants.SlackBotID,
 	}
 
+	routes.SetupSlack(slackListener)
+
 	go slackListener.ListenAndResponse()
 
 
 	httpMux := http.NewServeMux()
-	routes.SetupHTTP(httpMux, slackListener)
+	routes.SetupHTTP(httpMux)
 	socket.RegisterHandlers()
 
 	corsHandler := cors.New(cors.Options{

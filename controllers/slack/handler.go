@@ -3,7 +3,6 @@ package slack
 import (
 	"encoding/json"
 	"github.com/andreweggleston/DeathByDagger/config"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -19,8 +18,6 @@ type InteractionHandler struct {
 
 
 func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
-
-	spew.Dump(h)
 
 	if r.Method != http.MethodPost {
 		logrus.Warnf("Invalid Method: %s", r.Method)
@@ -74,7 +71,7 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 			logrus.Warn("Recieved a response value from callback that wasn't expected")
 		}
 
-		_, _, err = h.S.Client.PostMessage(message.OriginalMessage.Channel, slack.MsgOptionText(msg, false))
+		_, _, err = h.S.Client.PostMessage(message.Channel.ID, slack.MsgOptionText(msg, false))
 		if err != nil{
 			logrus.Errorf("Error while posting response to interactive message: %s", err)
 		}
