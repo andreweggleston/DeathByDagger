@@ -16,7 +16,7 @@ var httpRoutes = []route{
 	{"/websocket/", controllers.SocketHandler},
 
 	{"/login", login.LoginHandler},
-	{"/auth", login.CallbackHandler},
+	{"/callback", login.CallbackHandler},
 	{"/logout", login.LogoutHandler},
 }
 
