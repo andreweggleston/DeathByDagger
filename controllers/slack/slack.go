@@ -85,6 +85,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		}
 		if user.SlackUsername == "" {
 			user.SlackUsername = ev.Username
+			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Set your slack username successfully!"), false)); err != nil {
+				return fmt.Errorf("failed to post username message: %s", err)
+			}
 		} else {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("You've already set your username. If you typed it wrong, contact an admin."), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
@@ -93,9 +96,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		if err := user.Save(); err!=nil {
 			return fmt.Errorf("failed to save user's slackusername")
 		}
-		if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Set your slack username successfully!"), false)); err != nil {
-			return fmt.Errorf("failed to post username message: %s", err)
-		}
+
 		return nil
 	}
 
