@@ -91,6 +91,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That user has already set their slack username. Stop trying to impersonate people!"), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
 			}
+			return	nil
 		}
 		if user.SlackUserID == ""{
 			user.SetSlackUserID(ev.User)
@@ -112,7 +113,6 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	if len(m) != 2 || m[0] != "kill"{
 		return fmt.Errorf("invalid message")
 	}
-
 
 
 	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("you want to kill %s", m[1]), false)); err != nil {
