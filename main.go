@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
 	"github.com/andreweggleston/DeathByDagger/controllers"
-	"github.com/nlopes/slack"
 	slackhelper "github.com/andreweggleston/DeathByDagger/controllers/slack"
 	"github.com/andreweggleston/DeathByDagger/controllers/socket"
 	"github.com/andreweggleston/DeathByDagger/databaseDagger"
@@ -16,6 +15,7 @@ import (
 	"github.com/andreweggleston/DeathByDagger/inside/version"
 	"github.com/andreweggleston/DeathByDagger/routes"
 	socketServer "github.com/andreweggleston/DeathByDagger/routes/socket"
+	"github.com/nlopes/slack"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -25,7 +25,7 @@ import (
 )
 
 var (
-	flagGen = flag.Bool("genkey", false, "write a 32bit key for encrypting cookies, then exit")
+	flagGen   = flag.Bool("genkey", false, "write a 32bit key for encrypting cookies, then exit")
 	dbMaxopen = flag.Int("db-maxopen", 80, "maximum number of open database connections allowed.")
 )
 
@@ -59,9 +59,9 @@ func main() {
 	socket.RegisterHandlers()
 
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:		config.Constants.AllowedOrigins,
-		AllowedMethods:		[]string{"GET", "POST", "DELETE", "OPTIONS"},
-		AllowCredentials:	true,
+		AllowedOrigins:   config.Constants.AllowedOrigins,
+		AllowedMethods:   []string{"GET", "POST", "DELETE", "OPTIONS"},
+		AllowCredentials: true,
 	}).Handler(httpMux)
 
 	sig := make(chan os.Signal, 1)
@@ -80,8 +80,8 @@ func main() {
 	client := slack.New(config.Constants.SlackToken)
 
 	slackListener := &slackhelper.SlackListener{
-		Client:client,
-		BotID:config.Constants.SlackBotID,
+		Client: client,
+		BotID:  config.Constants.SlackBotID,
 	}
 
 	go slackListener.ListenAndResponse()

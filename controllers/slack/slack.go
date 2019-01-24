@@ -23,6 +23,8 @@ func (s *SlackListener) ListenAndResponse() {
 
 	go rtm.ManageConnection()
 
+	logrus.Info("Listening for Slack messages")
+
 	for msg := range rtm.IncomingEvents {
 		switch ev := msg.Data.(type) {
 		case *slack.MessageEvent:
