@@ -76,7 +76,18 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	}
 
 	if m[0] == "setusername" && len(m) == 2 {
+		p, err := player.GetPlayerBySlackUserID(ev.User)
+		if p != nil {
+			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("You've already set your username. If you typed it wrong, contact an admin."), false)); err != nil {
+				return fmt.Errorf("failed to post username message: %s", err)
+			}
+		}
+
+
 		user, err := player.GetPlayerByCSHUsername(m[1])
+
+
+
 		if err !=nil {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That CSH username doesn't exist in our database. Make sure you log in first."), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
@@ -93,10 +104,6 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		if user.SlackUserID == ""{
 			user.SetSlackUserID(ev.User)
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Set your slack username successfully!"), false)); err != nil {
-				return fmt.Errorf("failed to post username message: %s", err)
-			}
-		} else {
-			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("You've already set your username. If you typed it wrong, contact an admin."), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
 			}
 		}
