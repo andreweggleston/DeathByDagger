@@ -136,5 +136,5 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	cookie.Expires = time.Time{}
 	http.SetCookie(w, cookie)
 
-	http.Redirect(w, r, config.Constants.LoginRedirectPath, http.StatusFound)
+	http.Redirect(w, r, "http://"+config.Constants.LoginRedirectPath, http.StatusFound)
 }
