@@ -58,6 +58,7 @@ func (s *SlackListener) ListenAndResponse() {
 			// Ignore other events..
 			// fmt.Printf("Unexpected: %v\n", msg.Data)
 		}
+	}
 
 	//for msg := range rtm.IncomingEvents {
 	//	switch ev := msg.Data.(type) {
