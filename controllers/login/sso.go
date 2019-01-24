@@ -75,17 +75,11 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	data, _ := ioutil.ReadAll(resp.Body)
-	logrus.Info(string(data))
-	logrus.Info("weengie")
-	var s = new(User)
-	err = json.Unmarshal(data, &s)
+	var user = new(User)
+	err = json.Unmarshal(data, &user)
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	logrus.Info(s)
-	logrus.Info(s.Username)
-
-	user := s
 
 
 	p, err := player.GetPlayerByCSHUsername(user.Username)
