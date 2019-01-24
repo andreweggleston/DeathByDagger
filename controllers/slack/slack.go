@@ -14,12 +14,12 @@ const (
 )
 
 type SlackListener struct {
-	client    *slack.Client
-	botID     string
+	Client *slack.Client
+	BotID  string
 }
 
 func (s *SlackListener) ListenAndResponse() {
-	rtm := s.client.NewRTM()
+	rtm := s.Client.NewRTM()
 
 	go rtm.ManageConnection()
 
@@ -34,7 +34,7 @@ func (s *SlackListener) ListenAndResponse() {
 }
 
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
-	if !strings.HasPrefix(ev.Msg.Text, fmt.Sprintf("<@%s> ", s.botID)) {
+	if !strings.HasPrefix(ev.Msg.Text, fmt.Sprintf("<@%s> ", s.BotID)) {
 		return nil
 	}
 
@@ -45,7 +45,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	}
 
 
-	if _, _, err := s.client.PostMessage(ev.Channel, slack.MsgOptionText("Whats up doc", false)); err != nil {
+	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText("Whats up doc", false)); err != nil {
 		return fmt.Errorf("failed to post message: %s", err)
 	}
 

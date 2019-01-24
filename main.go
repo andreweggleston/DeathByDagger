@@ -80,8 +80,8 @@ func main() {
 	client := slack.New(config.Constants.SlackToken)
 
 	slackListener := &slackhelper.SlackListener{
-		client,
-		config.Constants.SlackBotID,
+		Client:client,
+		BotID:config.Constants.SlackBotID,
 	}
 
 	go slackListener.ListenAndResponse()
