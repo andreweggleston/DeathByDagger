@@ -32,5 +32,7 @@ func SetupHTTP(mux *http.ServeMux) {
 }
 
 func SetupSlack(listener *slackhelper.SlackListener){
-	InteractionHandler.S = listener
+	InteractionHandler = slackhelper.InteractionHandler{
+		S: listener,
+	}
 }
