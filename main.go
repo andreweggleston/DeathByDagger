@@ -6,9 +6,14 @@ import (
 	"flag"
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
+	"github.com/andreweggleston/DeathByDagger/controllers"
 	"github.com/andreweggleston/DeathByDagger/controllers/socket"
+	"github.com/andreweggleston/DeathByDagger/databaseDagger"
+	"github.com/andreweggleston/DeathByDagger/databaseDagger/migrations"
+	"github.com/andreweggleston/DeathByDagger/helpers"
 	"github.com/andreweggleston/DeathByDagger/inside/version"
 	"github.com/andreweggleston/DeathByDagger/routes"
+	socketServer "github.com/andreweggleston/DeathByDagger/routes/socket"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -19,6 +24,7 @@ import (
 
 var (
 	flagGen = flag.Bool("genkey", false, "write a 32bit key for encrypting cookies, then exit")
+	dbMaxopen = flag.Int("db-maxopen", 80, "maximum number of open databaseAssassin connections allowed.")
 )
 
 func main() {
@@ -40,14 +46,14 @@ func main() {
 	logrus.Debug("Branch: ", version.GitBranch)
 	logrus.Debug("Build date: ", version.BuildDate)
 
-	//initialize controller templates
+	controllers.InitTemplates()
 
-	//initialize db and set max conns
-	//do migrations
+	databaseDagger.Init()
+	databaseDagger.DB.DB().SetMaxOpenConns(*dbMaxopen)
+	migrations.Do()
 
 	httpMux := http.NewServeMux()
 	routes.SetupHTTP(httpMux)
-	//do handlers
 	socket.RegisterHandlers()
 
 	corsHandler := cors.New(cors.Options{
@@ -66,10 +72,19 @@ func main() {
 		os.Exit(0)
 	}()
 
+	logrus.Info("Serving on ", config.Constants.ListenAddress)
+	logrus.Info("Hosting on ", config.Constants.PublicAddress)
+
 	logrus.Fatal(http.ListenAndServe(config.Constants.ListenAddress, corsHandler))
 
 }
 
 func shutdown() {
 	logrus.Info("RECIEVED SIGINT/SIGTERM")
+	logrus.Info("Waiting for GlobalWait")
+	helpers.GlobalWait.Wait()
+	logrus.Info("waiting for socket requests to complete.")
+	socketServer.Wait()
+	logrus.Info("closing all active websocket connections")
+	socketServer.AuthServer.Close()
 }
