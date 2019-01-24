@@ -40,13 +40,12 @@ func (s *SlackListener) ListenAndResponse() {
 
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
-	logrus.Debugf("Incoming message: %v", ev)
 	spew.Dump(ev)
 
 
 	// Parse message
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
-	if len(m) == 0 || m[0] != "kill" {
+	if len(m) != 2 || m[0] != "kill" {
 		return fmt.Errorf("invalid message")
 	}
 
