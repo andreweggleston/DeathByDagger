@@ -3,6 +3,7 @@ package slack
 import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/models/player"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -83,7 +84,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			}
 			return err
 		}
-		_, err = player.GetPlayerBySlackUserID(ev.User)
+		p, err := player.GetPlayerBySlackUserID(ev.User)
+		spew.Dump(p)
+		logrus.Debug(err)
 		if err != nil {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That user has already set their slack username. Stop trying to impersonate people!"), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
