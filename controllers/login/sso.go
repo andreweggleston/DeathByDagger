@@ -113,7 +113,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, cookie)
 
-	http.Redirect(w, r, config.Constants.LoginRedirectPath, 303)
+	http.Redirect(w, r, config.Constants.LoginRedirectPath, http.StatusFound)
 
 }
 
@@ -136,5 +136,5 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	cookie.Expires = time.Time{}
 	http.SetCookie(w, cookie)
 
-	http.Redirect(w, r, config.Constants.LoginRedirectPath, 303)
+	http.Redirect(w, r, config.Constants.LoginRedirectPath, http.StatusFound)
 }
