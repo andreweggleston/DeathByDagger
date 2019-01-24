@@ -42,6 +42,7 @@ func ListenAndResponse() {
 			return
 
 		default:
+			fmt.Printf("Unknown message: %v\n", ev)
 		}
 	}
 }
