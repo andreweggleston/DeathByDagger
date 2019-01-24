@@ -3,6 +3,7 @@ package slack
 import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/models/player"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -77,6 +78,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	if m[0] == "setusername" && len(m) == 2 {
 		user, err := player.GetPlayerByCSHUsername(m[1])
+		spew.Dump(ev)
 		logrus.Debug("username: ", ev.Username)
 		if err !=nil {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That CSH username doesn't exist in our database. Make sure you log in first."), false)); err != nil {
