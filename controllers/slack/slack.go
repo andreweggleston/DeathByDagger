@@ -2,7 +2,6 @@ package slack
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -40,8 +39,6 @@ func (s *SlackListener) ListenAndResponse() {
 
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
-	spew.Dump(ev)
-
 	if ev.SubType == "bot_message" {
 		return nil
 	}
@@ -57,6 +54,8 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("you want to kill %s", m[1]), false)); err != nil {
 		return fmt.Errorf("failed to post message: %s", err)
 	}
+
+	//TODO: do something with the selected users data
 
 	return nil
 }
