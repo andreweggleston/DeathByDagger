@@ -30,7 +30,7 @@ func (s *SlackListener) ListenAndResponse() {
 		switch ev := msg.Data.(type) {
 		case *slack.MessageEvent:
 			if err := s.handleMessageEvent(ev); err != nil {
-				logrus.Error("Failed to handle message: %s", err)
+				logrus.Errorf("Failed to handle message: %s", err)
 			}
 
 		}
@@ -49,14 +49,19 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	if m[0] == "test" {
 		attachment := slack.Attachment{
 			Text:"Were you killed?",
-			Fields: []slack.AttachmentField{
+			Actions: []slack.AttachmentAction{
 				{
-					Title: "Yes",
+					Name: "confirm",
+					Type: "button",
+					Text: "Yes",
 					Value: "confirm",
 				},
 				{
-					Title: "Nope",
-					Value: "Deny",
+
+					Name: "deny",
+					Type: "button",
+					Text: "Nope",
+					Value: "deny",
 				},
 
 			},
