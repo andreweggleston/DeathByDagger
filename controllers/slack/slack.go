@@ -33,7 +33,7 @@ func (s *SlackListener) ListenAndResponse() {
 			}
 
 		default:
-			logrus.Debugf("Message event: %s", ev)
+			logrus.Debugf("Message event: %s", &ev)
 		}
 	}
 }
