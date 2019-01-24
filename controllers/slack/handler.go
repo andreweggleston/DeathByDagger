@@ -19,6 +19,9 @@ type InteractionHandler struct {
 
 
 func (h InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
+
+	spew.Dump(h)
+
 	if r.Method != http.MethodPost {
 		logrus.Warnf("Invalid Method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
