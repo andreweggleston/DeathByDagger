@@ -85,7 +85,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		}
 		_, err = player.GetPlayerBySlackUserID(ev.User)
 		if err != nil {
-			return fmt.Error("That user already has an assigned username. Stop trying to impersonate people!")
+			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That user has already set their slack username. Stop trying to impersonate people!"), false)); err != nil {
+				return fmt.Errorf("failed to post username message: %s", err)
+			}
 		}
 		if user.SlackUserID == ""{
 			user.SetSlackUserID(ev.User)
