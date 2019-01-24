@@ -19,7 +19,7 @@ type Player struct {
 	Name        string `json:"name"`
 	Email       string `sql:"not null" json:"email"`
 	PhoneNumber string `json:"phonenumber"`
-	SlackUsername string `json:"slackuser"`
+	SlackUserID string `json:"slackuserid"`
 
 	Target           string    `json:"target"`
 	Kills            uint      `sql:"not null" json:"kills"`
