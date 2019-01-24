@@ -2,6 +2,7 @@ package slack
 
 import (
 	"fmt"
+	"github.com/andreweggleston/DeathByDagger/models/player"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -74,6 +75,21 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	}
 
+	if m[0] == "setusername" && len(m) == 2 {
+		user, err := player.GetPlayerByCSHUsername(m[1])
+		if err !=nil {
+			return err
+		}
+		user.SlackUsername = ev.Username
+		if err := user.Save(); err!=nil {
+			return fmt.Errorf("failed to save user's slackusername")
+		}
+		if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Set your slack username successfully!"), false)); err != nil {
+			return fmt.Errorf("failed to post username message: %s", err)
+		}
+		return nil
+	}
+
 	if len(m) != 2 || m[0] != "kill"{
 		return fmt.Errorf("invalid message")
 	}
@@ -81,7 +97,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 
 	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("you want to kill %s", m[1]), false)); err != nil {
-		return fmt.Errorf("failed to post message: %s", err)
+		return fmt.Errorf("failed to post kill message: %s", err)
 	}
 
 	//TODO: do something with the selected users data
