@@ -34,7 +34,7 @@ var (
 	conf = &oauth2.Config{
 		ClientID:config.Constants.OpenIDClientID,
 		ClientSecret:config.Constants.OpenIDClientSec,
-		RedirectURL:"http://localhost:8081/callback",
+		RedirectURL:"http://"+config.Constants.LoginRedirectPath+"/callback",
 		Scopes:[]string{"openid, profile"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://" + config.Constants.OpenIDUrl + "/auth",
