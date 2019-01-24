@@ -55,7 +55,7 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 
 	if message.CallbackID == "killConfirm" {
 
-		_, _, err := h.S.Client.DeleteMessage(message.OriginalMessage.Channel, message.OriginalMessage.Timestamp)
+		_, _, err := h.S.Client.DeleteMessage(message.Channel.ID, message.OriginalMessage.Timestamp)
 		if err != nil {
 			logrus.Errorf("Error while deleting interactive message: %s", err)
 		}
