@@ -64,7 +64,7 @@ func main() {
 
 	go slackListener.ListenAndResponse()
 
-	routes.SetupSlack(&slackListener)
+	routes.SetupSlack(slackListener)
 
 	httpMux := http.NewServeMux()
 	routes.SetupHTTP(httpMux)
