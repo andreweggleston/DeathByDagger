@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
 	"github.com/andreweggleston/DeathByDagger/controllers"
+	"github.com/andreweggleston/DeathByDagger/controllers/slack"
 	"github.com/andreweggleston/DeathByDagger/controllers/socket"
 	"github.com/andreweggleston/DeathByDagger/databaseDagger"
 	"github.com/andreweggleston/DeathByDagger/databaseDagger/migrations"
@@ -74,6 +75,8 @@ func main() {
 
 	logrus.Info("Serving on ", config.Constants.ListenAddress)
 	logrus.Info("Hosting on ", config.Constants.PublicAddress)
+
+	go slack.ListenAndResponse()
 
 	logrus.Fatal(http.ListenAndServe(config.Constants.ListenAddress, corsHandler))
 

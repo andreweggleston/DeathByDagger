@@ -20,6 +20,7 @@ type constants struct {
 	OpenIDClientSec   string   `envconfig:"OPENID_CLIENT_SECRET" doc:"Auth0 Client Secret"`
 	CookieDomain      string   `envconfig:"SERVER_COOKIE_DOMAIN" default:"" doc:"Cookie URL domain"`
 	LoginRedirectPath string   `envconfig:"SERVER_REDIRECT_PATH" doc:"URL to redirect user to after a successful login"`
+	SlackToken string   `envconfig:"SLACK_TOKEN" doc:"Slack token for bot for interactive messages"`
 }
 
 var Constants = constants{}
