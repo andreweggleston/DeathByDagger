@@ -33,8 +33,6 @@ func (s *SlackListener) ListenAndResponse() {
 				logrus.Error("Failed to handle message: %s", err)
 			}
 
-		default:
-			logrus.Debugf("Message event: %s", ev)
 		}
 	}
 }
