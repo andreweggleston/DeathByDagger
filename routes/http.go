@@ -12,6 +12,8 @@ type route struct {
 	handler http.HandlerFunc
 }
 
+var InteractionHandler = slackhelper.InteractionHandler{}
+
 var httpRoutes = []route{
 	{"/", controllers.MainHandler},
 	{"/websocket/", controllers.SocketHandler},
@@ -20,11 +22,15 @@ var httpRoutes = []route{
 	{"/callback", login.CallbackHandler},
 	{"/logout", login.LogoutHandler},
 
-	{"/slackinteraction", slackhelper.InteractionHandler},
+	{"/slackinteraction", InteractionHandler.InteractionHandler},
 }
 
 func SetupHTTP(mux *http.ServeMux) {
 	for _, httpRoute := range httpRoutes {
 		mux.HandleFunc(httpRoute.pattern, httpRoute.handler)
 	}
+}
+
+func SetupSlack(listener *slackhelper.SlackListener){
+	InteractionHandler.S = listener
 }

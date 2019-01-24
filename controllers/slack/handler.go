@@ -13,7 +13,12 @@ import (
 
 var VerificationToken = config.Constants.SlackVerificatoinToken
 
-func InteractionHandler(w http.ResponseWriter, r *http.Request) {
+type InteractionHandler struct {
+	S *SlackListener
+}
+
+
+func (h InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		logrus.Warnf("Invalid Method: %s", r.Method)
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -52,21 +57,28 @@ func InteractionHandler(w http.ResponseWriter, r *http.Request) {
 
 	if message.CallbackID == "killConfirm" {
 
-		originalmessage := message.OriginalMessage
+		_, _, err := h.S.Client.DeleteMessage(message.OriginalMessage.Channel, message.OriginalMessage.Timestamp)
+		if err == nil {
+
+		}
+
+		msg := ""
 
 		switch message.ActionCallback.Actions[0].Value {
 		case "confirm":
-			originalmessage.Text = "You're dead! Sorry!"
-			originalmessage.Attachments = []slack.Attachment{}
-
+			msg = "You're dead! Sorry!"
 		case "deny":
-			originalmessage.Text = "You've denied your mark. Keep playing!"
-			originalmessage.Attachments = []slack.Attachment{}
+			msg = "You've denied your mark. Keep playing!"
+		default:
+			logrus.Warn("Recieved a response value from callback that wasn't expected")
 		}
 
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(&originalmessage)
+		_, _, err = h.S.Client.PostMessage(message.OriginalMessage.Channel, slack.MsgOptionText(msg, false))
+		if err != nil{
+			logrus.Errorf("Error while posting response to interactive message: %s", err)
+		}
+
 		return
 	}
 }
+

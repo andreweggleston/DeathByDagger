@@ -54,6 +54,18 @@ func main() {
 	databaseDagger.DB.DB().SetMaxOpenConns(*dbMaxopen)
 	migrations.Do()
 
+
+	client := slack.New(config.Constants.SlackBotToken)
+
+	slackListener := &slackhelper.SlackListener{
+		Client: client,
+		BotID:  config.Constants.SlackBotID,
+	}
+
+	go slackListener.ListenAndResponse()
+
+	routes.SetupSlack(slackListener)
+
 	httpMux := http.NewServeMux()
 	routes.SetupHTTP(httpMux)
 	socket.RegisterHandlers()
@@ -77,14 +89,9 @@ func main() {
 	logrus.Info("Serving on ", config.Constants.ListenAddress)
 	logrus.Info("Hosting on ", config.Constants.PublicAddress)
 
-	client := slack.New(config.Constants.SlackBotToken)
 
-	slackListener := &slackhelper.SlackListener{
-		Client: client,
-		BotID:  config.Constants.SlackBotID,
-	}
 
-	go slackListener.ListenAndResponse()
+
 
 	logrus.Fatal(http.ListenAndServe(config.Constants.ListenAddress, corsHandler))
 
