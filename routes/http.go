@@ -12,7 +12,7 @@ type route struct {
 	handler http.HandlerFunc
 }
 
-var InteractionHandler = slackhelper.InteractionHandler{}
+var InteractionHandler slackhelper.InteractionHandler
 
 var httpRoutes = []route{
 	{"/", controllers.MainHandler},
