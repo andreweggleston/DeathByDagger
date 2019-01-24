@@ -45,7 +45,29 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	// Parse message
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
-	if len(m) != 2 || m[0] != "kill" {
+
+	if m[0] == "test" {
+		attachment := slack.Attachment{
+			Text:"Were you killed?",
+			Fields: []slack.AttachmentField{
+				{
+					Title: "Yes",
+					Value: "confirm",
+				},
+				{
+					Title: "Nope",
+					Value: "Deny",
+				},
+
+			},
+		}
+
+		if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText("You've been marked for death!", false), slack.MsgOptionAttachments(attachment)); err != nil {
+			return fmt.Errorf("failed to post message: %s", err)
+		}
+	}
+
+	if len(m) != 2 || m[0] != "kill"{
 		return fmt.Errorf("invalid message")
 	}
 

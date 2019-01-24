@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/andreweggleston/DeathByDagger/controllers"
 	"github.com/andreweggleston/DeathByDagger/controllers/login"
+	slackhelper "github.com/andreweggleston/DeathByDagger/controllers/slack"
 	"net/http"
 )
 
@@ -18,6 +19,8 @@ var httpRoutes = []route{
 	{"/login", login.LoginHandler},
 	{"/callback", login.CallbackHandler},
 	{"/logout", login.LogoutHandler},
+
+	{"/slackinteraction", slackhelper.InteractionHandler},
 }
 
 func SetupHTTP(mux *http.ServeMux) {

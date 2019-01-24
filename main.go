@@ -77,7 +77,7 @@ func main() {
 	logrus.Info("Serving on ", config.Constants.ListenAddress)
 	logrus.Info("Hosting on ", config.Constants.PublicAddress)
 
-	client := slack.New(config.Constants.SlackToken)
+	client := slack.New(config.Constants.SlackBotToken)
 
 	slackListener := &slackhelper.SlackListener{
 		Client: client,
