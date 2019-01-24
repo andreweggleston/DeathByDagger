@@ -122,7 +122,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	rand.Read(b)
 	state = base64.StdEncoding.EncodeToString(b)
 	url := conf.AuthCodeURL(state)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "http://"+url, http.StatusTemporaryRedirect)
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
