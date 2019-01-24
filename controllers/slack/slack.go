@@ -41,20 +41,16 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	logrus.Debug("Incoming message: ", ev)
 
-	if !strings.HasPrefix(ev.Msg.Text, fmt.Sprintf("<@%s> ", s.BotID)) {
-		return nil
-	}
-
-
 
 	// Parse message
-	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")[1:]
+	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
 	if len(m) == 0 || m[0] != "kill" {
 		return fmt.Errorf("invalid message")
 	}
 
 
-	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText("Whats up doc", false)); err != nil {
+
+	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("you want to kill %s", m[1]), false)); err != nil {
 		return fmt.Errorf("failed to post message: %s", err)
 	}
 
