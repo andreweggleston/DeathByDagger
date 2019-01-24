@@ -42,6 +42,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	spew.Dump(ev)
 
+	if ev.SubType == "bot_message" {
+		return nil
+	}
 
 	// Parse message
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
