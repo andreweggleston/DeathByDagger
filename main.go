@@ -66,8 +66,7 @@ func main() {
 
 
 	httpMux := http.NewServeMux()
-	routes.SetupHTTP(httpMux, slackListener
-	)
+	routes.SetupHTTP(httpMux, slackListener)
 	socket.RegisterHandlers()
 
 	corsHandler := cors.New(cors.Options{
