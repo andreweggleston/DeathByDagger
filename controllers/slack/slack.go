@@ -49,6 +49,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	if m[0] == "test" {
 		attachment := slack.Attachment{
 			Text:"Were you killed?",
+			CallbackID: "killConfirm",
 			Actions: []slack.AttachmentAction{
 				{
 					Name: "confirm",
