@@ -95,8 +95,6 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			return err
 		}
 
-		logrus.Debug("user.SlackUserID: ", user.SlackUserID)
-
 		if user.SlackUserID != "" {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That user has already set their slack username. Stop trying to impersonate people!"), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
