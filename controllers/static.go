@@ -26,7 +26,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err == nil {
 		p = controllerhelpers.GetPlayer(tok)
-	}
+	} else { fmt.Printf("error while getting token") }
 
 	errtempl := mainTempl.Execute(w, map[string]interface{}{
 		"LoggedIn":  err == nil,
