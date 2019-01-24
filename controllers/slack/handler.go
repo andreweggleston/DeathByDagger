@@ -56,8 +56,6 @@ func (h InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	spew.Dump(message)
-
 	if message.CallbackID == "killConfirm" {
 
 		_, _, err := h.S.Client.DeleteMessage(message.OriginalMessage.Channel, message.OriginalMessage.Timestamp)
