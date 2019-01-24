@@ -26,7 +26,6 @@ func (s *SlackListener) ListenAndResponse() {
 
 	logrus.Info("Listening for Slack messages")
 
-
 	for msg := range rtm.IncomingEvents {
 		switch ev := msg.Data.(type) {
 		case *slack.MessageEvent:
@@ -49,23 +48,22 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	if m[0] == "test" {
 		attachment := slack.Attachment{
-			Text:"Were you killed?",
+			Text:       "Were you killed?",
 			CallbackID: "killConfirm",
 			Actions: []slack.AttachmentAction{
 				{
-					Name: "confirm",
-					Type: "button",
-					Text: "Yes",
+					Name:  "confirm",
+					Type:  "button",
+					Text:  "Yes",
 					Value: "confirm",
 				},
 				{
 
-					Name: "deny",
-					Type: "button",
-					Text: "Nope",
+					Name:  "deny",
+					Type:  "button",
+					Text:  "Nope",
 					Value: "deny",
 				},
-
 			},
 		}
 
@@ -84,11 +82,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			return nil
 		}
 
-
 		user, err := player.GetPlayerByCSHUsername(m[1])
 
-
-		if err !=nil {
+		if err != nil {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That CSH username doesn't exist in our database. Make sure you log in first."), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
 			}
@@ -99,27 +95,36 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That user has already set their slack username. Stop trying to impersonate people!"), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
 			}
-			return	nil
+			return nil
 		}
-		if user.SlackUserID == ""{
+		if user.SlackUserID == "" {
 			user.SetSlackUserID(ev.User)
 			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Set your slack username successfully!"), false)); err != nil {
 				return fmt.Errorf("failed to post username message: %s", err)
 			}
 		}
-		if err := user.Save(); err!=nil {
+		if err := user.Save(); err != nil {
 			return fmt.Errorf("failed to save user's slackusername")
 		}
 
 		return nil
 	}
 
-	if len(m) != 2 || m[0] != "kill"{
+	if len(m) != 1 || m[0] != "killtarget" {
 		return fmt.Errorf("invalid message")
 	}
 
+	user, err := player.GetPlayerBySlackUserID(ev.User)
 
-	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("you want to kill %s", m[1]), false)); err != nil {
+	if err != nil {
+		return err
+	}
+	target, err := player.GetPlayerByCSHUsername(user.Target)
+	if err != nil {
+		return err
+	}
+
+	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Marked <@%s> as dead. When they confirm that they've been killed, you will recieve your next target.", target.SlackUserID), false)); err != nil {
 		return fmt.Errorf("failed to post kill message: %s", err)
 	}
 
@@ -127,4 +132,3 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	return nil
 }
-
