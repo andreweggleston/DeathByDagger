@@ -173,6 +173,15 @@ func (player *Player) UpdatePlayerData() error {
 	return nil
 }
 
+func GetPlayerBySlackUserID(userid string) (*Player, error){
+	var player = Player{}
+	err := db.DB.Where("slack_user_id = ?", userid).First(&player).Error
+	if err != nil {
+		return nil, ErrPlayerNotFound
+	}
+	return &player, nil
+}
+
 func (player *Player) SetSlackUserID(username string) {
 	defer player.Save()
 	player.SlackUserID = username
