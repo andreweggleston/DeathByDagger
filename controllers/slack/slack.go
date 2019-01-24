@@ -78,6 +78,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	if m[0] == "setusername" && len(m) == 2 {
 		user, err := player.GetPlayerByCSHUsername(m[1])
 		if err !=nil {
+			if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("That CSH username doesn't exist in our database. Make sure you log in first."), false)); err != nil {
+				return fmt.Errorf("failed to post username message: %s", err)
+			}
 			return err
 		}
 		if user.SlackUsername == "" {
