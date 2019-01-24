@@ -16,6 +16,7 @@ func ListenAndResponse() {
 		fmt.Print("Event Recieved: ")
 		switch ev := msg.Data.(type) {
 		case *slack.HelloEvent:
+			fmt.Println("Hello!")
 			// Ignore hello
 
 		case *slack.ConnectedEvent:
