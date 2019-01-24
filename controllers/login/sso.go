@@ -79,7 +79,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	logrus.Info("weengie")
 	var s = new(UserInfo)
 	err = json.Unmarshal(data, &s)
-	logrus.Info(s)
+	logrus.Info(*s)
 	if err != nil {
 		logrus.Fatal(err)
 	}
