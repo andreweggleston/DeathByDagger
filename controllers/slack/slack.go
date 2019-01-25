@@ -125,7 +125,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	}
 	target.MarkForDeath()
 	channel, _, _, err := s.Client.OpenConversation(&slack.OpenConversationParameters{Users:[]string{target.SlackUserID}})
-	if err != nil {
+	if err == nil {
 		attachment := slack.Attachment{
 			Text:       "Were you killed?",
 			CallbackID: "killConfirm",
