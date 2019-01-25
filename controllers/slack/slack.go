@@ -123,7 +123,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	if err != nil {
 		return err
 	}
-
+	target.MarkForDeath()
 	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Marked <@%s> as dead. When they confirm that they've been killed, you will recieve your next target.", target.SlackUserID), false)); err != nil {
 		return fmt.Errorf("failed to post kill message: %s", err)
 	}
