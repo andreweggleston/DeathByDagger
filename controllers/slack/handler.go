@@ -79,7 +79,8 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 			msg = "You're dead! Sorry!"
 			user.ConfirmOwnMark()
 			assassin.UpdatePlayerData()
-			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", assassin.Target, assassin.Kills)
+			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
+			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", target.SlackUserID, assassin.Kills)
 
 		case "deny":
 			msg = "You've denied your mark. Keep playing!"
