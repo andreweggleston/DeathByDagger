@@ -2,7 +2,9 @@ package slack
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
+	"github.com/andreweggleston/DeathByDagger/models/player"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -15,7 +17,6 @@ var VerificationToken = config.Constants.SlackVerificatoinToken
 type InteractionHandler struct {
 	S *SlackListener
 }
-
 
 func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -61,22 +62,46 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 		}
 
 		msg := ""
+		msg2 := ""
+		user, err := player.GetPlayerBySlackUserID(message.User.ID)
+		assassin, err2 := player.GetPlayerByTarget(user.CSHUsername)
+		if err != nil {
+			logrus.Error(err)
+			return
+		}
+		if err2 != nil {
+			logrus.Error(err)
+			return
+		}
 
 		switch message.ActionCallback.Actions[0].Value {
 		case "confirm":
 			msg = "You're dead! Sorry!"
+			user.ConfirmOwnMark()
+			assassin.UpdatePlayerData()
+			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", assassin.Target, assassin.Kills)
+
 		case "deny":
 			msg = "You've denied your mark. Keep playing!"
+			user.DenyOwnMark()
+			msg2 = "Your target claims they weren't killed. If you believe this is'nt true, contact an admin."
 		default:
 			logrus.Warn("Recieved a response value from callback that wasn't expected")
 		}
-
 		_, _, err = h.S.Client.PostMessage(message.Channel.ID, slack.MsgOptionText(msg, false))
-		if err != nil{
+		if err != nil {
 			logrus.Errorf("Error while posting response to interactive message: %s", err)
 		}
+
+		channel, _, _, err := h.S.Client.OpenConversation(&slack.OpenConversationParameters{Users:[]string{assassin.SlackUserID}})
+		if err != nil {
+			_, _, err = h.S.Client.PostMessage(channel.ID, slack.MsgOptionText(msg2, false))
+			if err != nil {
+				logrus.Errorf("Error while posting response to interactive message: %s", err)
+			}
+		}
+
 
 		return
 	}
 }
-

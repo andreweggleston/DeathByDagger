@@ -54,7 +54,6 @@ func NewPlayer(cshusername string) (*Player, error) {
 	return player, nil
 }
 
-
 func (p *Player) Alias() string {
 	alias := p.GetSetting("siteAlias")
 	if alias == "" {
@@ -87,6 +86,15 @@ func GetPlayerByID(ID uint) (*Player, error) {
 func GetPlayerByCSHUsername(cshusername string) (*Player, error) {
 	var player = Player{}
 	err := db.DB.Where("csh_username = ?", cshusername).First(&player).Error
+	if err != nil {
+		return nil, ErrPlayerNotFound
+	}
+	return &player, nil
+}
+
+func GetPlayerByTarget(target string) (*Player, error) {
+	var player = Player{}
+	err := db.DB.Where("target = ?", target).First(&player).Error
 	if err != nil {
 		return nil, ErrPlayerNotFound
 	}
@@ -173,7 +181,7 @@ func (player *Player) UpdatePlayerData() error {
 	return nil
 }
 
-func GetPlayerBySlackUserID(userid string) (*Player, error){
+func GetPlayerBySlackUserID(userid string) (*Player, error) {
 	var player = Player{}
 	err := db.DB.Where("slack_user_id = ?", userid).First(&player).Error
 	if err != nil {
