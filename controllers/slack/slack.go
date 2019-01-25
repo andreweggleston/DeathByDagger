@@ -124,7 +124,8 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		return err
 	}
 	target.MarkForDeath()
-	if channel, _, _, err := s.Client.OpenConversation(&slack.OpenConversationParameters{Users:[]string{target.SlackUserID}}); err != nil{
+	channel, _, _, err := s.Client.OpenConversation(&slack.OpenConversationParameters{Users:[]string{target.SlackUserID}})
+	if err != nil {
 		attachment := slack.Attachment{
 			Text:       "Were you killed?",
 			CallbackID: "killConfirm",
@@ -148,6 +149,8 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		if _, _, err := s.Client.PostMessage(channel.ID, slack.MsgOptionText("You've been marked for death!", false), slack.MsgOptionAttachments(attachment)); err != nil {
 			return fmt.Errorf("failed to post interactive message: %s", err)
 		}
+	} else {
+		logrus.Error("Couldn't open conversation? ", err)
 	}
 	if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Marked <@%s> as dead. When they confirm that they've been killed, you will recieve your next target.", target.SlackUserID), false)); err != nil {
 		return fmt.Errorf("failed to post kill message: %s", err)
