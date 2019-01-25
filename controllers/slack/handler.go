@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
 	"github.com/andreweggleston/DeathByDagger/models/player"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -79,6 +80,7 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 			msg = "You're dead! Sorry!"
 			user.ConfirmOwnMark()
 			assassin.UpdatePlayerData()
+			spew.Dump(assassin)
 			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
 			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", target.SlackUserID, assassin.Kills)
 
