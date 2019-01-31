@@ -18,6 +18,7 @@ import (
 	"github.com/nlopes/slack"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
+	ldap3 "gopkg.in/ldap.v3"
 	"net/http"
 	"os"
 	"os/signal"
@@ -56,15 +57,31 @@ func main() {
 
 
 	client := slack.New(config.Constants.SlackBotToken)
+	ldapServ, err := ldap3.Dial("tcp", fmt.Sprintf("%s:%d", config.Constants.LDAPUrl, config.Constants.LDAPPort))
+
+	ldapConf := &helpers.LDAP{
+		L: ldapServ,
+		DN: "cn=users,cn=accounts,dc=csh,dc=rit,dc=edu",
+	}
+
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	if err := ldapServ.Bind(config.Constants.LDAPUser, config.Constants.LDAPPass); err != nil {
+		logrus.Fatal(err)
+	}
 
 	slackListener := &slackhelper.SlackListener{
 		Client: client,
 		BotID:  config.Constants.SlackBotID,
+		L:		ldapConf,
 	}
 
 	routes.SetupSlack(slackListener)
 
 	go slackListener.ListenAndResponse()
+
 
 
 	httpMux := http.NewServeMux()
@@ -83,7 +100,7 @@ func main() {
 
 	go func() {
 		<-sig
-		shutdown()
+		shutdown(ldapServ)
 		os.Exit(0)
 	}()
 
@@ -98,7 +115,7 @@ func main() {
 
 }
 
-func shutdown() {
+func shutdown(ldap *ldap3.Conn) {
 	logrus.Info("RECIEVED SIGINT/SIGTERM")
 	logrus.Info("Waiting for GlobalWait")
 	helpers.GlobalWait.Wait()
@@ -106,4 +123,7 @@ func shutdown() {
 	socketServer.Wait()
 	logrus.Info("closing all active websocket connections")
 	socketServer.AuthServer.Close()
+	socketServer.UnauthServer.Close()
+	logrus.Info("closing ldap connection")
+	ldap.Close()
 }

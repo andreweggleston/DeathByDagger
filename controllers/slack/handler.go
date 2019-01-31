@@ -13,7 +13,7 @@ import (
 	"net/url"
 )
 
-var VerificationToken = config.Constants.SlackVerificatoinToken
+var VerificationToken = config.Constants.SlackVerificationToken
 
 type InteractionHandler struct {
 	S *SlackListener
