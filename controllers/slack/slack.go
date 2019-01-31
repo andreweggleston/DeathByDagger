@@ -2,6 +2,7 @@ package slack
 
 import (
 	"fmt"
+	"github.com/andreweggleston/DeathByDagger/helpers"
 	"github.com/andreweggleston/DeathByDagger/models/player"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
@@ -17,6 +18,7 @@ const (
 type SlackListener struct {
 	Client *slack.Client
 	BotID  string
+	L	   *helpers.LDAP
 }
 
 func (s *SlackListener) ListenAndResponse() {
@@ -46,31 +48,8 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	// Parse message
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
 
-	if m[0] == "test" {
-		attachment := slack.Attachment{
-			Text:       "Were you killed?",
-			CallbackID: "killConfirm",
-			Actions: []slack.AttachmentAction{
-				{
-					Name:  "confirm",
-					Type:  "button",
-					Text:  "Yes",
-					Value: "confirm",
-				},
-				{
-
-					Name:  "deny",
-					Type:  "button",
-					Text:  "Nope",
-					Value: "deny",
-				},
-			},
-		}
-
-		if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText("You've been marked for death!", false), slack.MsgOptionAttachments(attachment)); err != nil {
-			return fmt.Errorf("failed to post message: %s", err)
-		}
-
+	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
+		//todo: initiate ldap search
 	}
 
 	if m[0] == "setusername" && len(m) == 2 {
@@ -157,4 +136,9 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	}
 
 	return nil
+}
+
+func (s *SlackListener) sendMessage(message string, ch *slack.Channel) error {
+	_, _, err := s.Client.PostMessage(ch.ID, slack.MsgOptionText(message, false))
+	return err
 }
