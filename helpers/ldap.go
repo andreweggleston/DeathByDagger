@@ -14,7 +14,7 @@ type LDAP struct {
 
 func (l *LDAP) SearchForSlackUID(slackUID string) (*ldap.Entry, error) {
 	logrus.Info(l.DN)
-	searchRequest := ldap.NewSearchRequest(l.DN, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false, fmt.Sprintf("(uid=%s)", "mom"), []string{"uid", "cn", "slackuid"},nil)
+	searchRequest := ldap.NewSearchRequest(l.DN, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false, fmt.Sprintf("(slackuid=%s)", slackUID), []string{"uid", "cn"},nil)
 	spew.Dump(searchRequest)
 	sr, err := l.L.Search(searchRequest)
 
