@@ -51,6 +51,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
 		if usernameEntry, err := s.L.SearchForSlackUID(ev.User); err != nil {
+			logrus.Errorf("Failed to search for slack uid: %s", err)
 			return s.sendMessage("Connect your slack to LDAP with the following url: http://eac.csh.rit.edu", ev.Channel)
 		} else {
 			for _, attribute := range usernameEntry.Attributes {
