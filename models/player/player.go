@@ -14,10 +14,8 @@ var ErrPlayerInReportedSlot = errors.New("Player in reported slot")
 
 type Player struct {
 	ID          uint   `gorm:"primary_key" json:"id"`
-	Sub         string `sql:"not null;unique" json:"sub"`
 	CSHUsername string `sql:"not null;unique" json:"cshusername"`
 	Name        string `json:"name"`
-	Email       string `sql:"not null" json:"email"`
 	PhoneNumber string `json:"phonenumber"`
 	SlackUserID string `json:"slackuserid"`
 

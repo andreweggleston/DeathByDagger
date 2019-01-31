@@ -2,9 +2,9 @@ package slack
 
 import (
 	"fmt"
+	"github.com/andreweggleston/DeathByDagger/databaseDagger"
 	"github.com/andreweggleston/DeathByDagger/helpers"
 	"github.com/andreweggleston/DeathByDagger/models/player"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -54,9 +54,13 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			logrus.Errorf("Failed to search for slack uid: %s", err)
 			return s.sendMessage("Connect your slack to LDAP with the following url: http://eac.csh.rit.edu", ev.Channel)
 		} else {
-			for _, attribute := range usernameEntry.Attributes {
-				spew.Dump(attribute)
+			p, err := player.NewPlayer(usernameEntry.Attributes[0].Values[0])
+			if err != nil {
+				return s.sendMessage("Something broke... shid", ev.Channel)
 			}
+			p.SlackUserID = ev.User
+			p.Name = usernameEntry.Attributes[1].Values[0]
+			databaseDagger.DB.Create(p)
 		}
 	}
 

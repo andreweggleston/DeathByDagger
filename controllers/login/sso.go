@@ -93,8 +93,6 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		p.Name = user.GivenName + " " + user.FamilyName
-		p.Sub = user.Sub
-		p.Email = user.Email
 
 		databaseDagger.DB.Create(p)
 	}
