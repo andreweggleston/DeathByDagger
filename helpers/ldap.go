@@ -13,6 +13,7 @@ type LDAP struct {
 
 func (l *LDAP) SearchForSlackUID(slackUID string) (*ldap.Entry, error) {
 	searchRequest := ldap.NewSearchRequest(l.DN, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false, fmt.Sprintf("(slackuid=%s)", slackUID), []string{"uid", "cn"},nil)
+	spew.Dump(searchRequest)
 	sr, err := l.L.Search(searchRequest)
 
 	if err != nil {
