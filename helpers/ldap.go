@@ -19,6 +19,8 @@ func (l *LDAP) SearchForSlackUID(slackUID string) (*ldap.Entry, error) {
 		return nil, err
 	}
 
+	spew.Dump(sr)
+
 	for _, entry := range sr.Entries {
 		spew.Dump(entry)
 		fmt.Printf("%s: %v\n", entry.DN, entry.GetAttributeValue("uid"))
