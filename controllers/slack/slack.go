@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/helpers"
 	"github.com/andreweggleston/DeathByDagger/models/player"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -49,7 +50,13 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
 
 	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
-		//todo: initiate ldap search
+		if usernameEntry, err := s.L.SearchForSlackUID(ev.User); err != nil {
+			return s.sendMessage("Connect your slack to LDAP with the following url: http://eac.csh.rit.edu", ev.Channel)
+		} else {
+			for _, attribute := range usernameEntry.Attributes {
+				spew.Dump(attribute)
+			}
+		}
 	}
 
 	if m[0] == "setusername" && len(m) == 2 {
@@ -138,7 +145,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	return nil
 }
 
-func (s *SlackListener) sendMessage(message string, ch *slack.Channel) error {
-	_, _, err := s.Client.PostMessage(ch.ID, slack.MsgOptionText(message, false))
+func (s *SlackListener) sendMessage(message string, ch string) error {
+	_, _, err := s.Client.PostMessage(ch, slack.MsgOptionText(message, false))
 	return err
 }
