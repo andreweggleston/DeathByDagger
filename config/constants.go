@@ -22,7 +22,11 @@ type constants struct {
 	LoginRedirectPath      string   `envconfig:"SERVER_REDIRECT_PATH" doc:"URL to redirect user to after a successful login"`
 	SlackBotToken          string   `envconfig:"SLACK_BOT_TOKEN" doc:"Slack token for bot for interactive messages"`
 	SlackBotID             string   `envconfig:"SLACK_BOT_ID" doc:"Slack ID for bot"`
-	SlackVerificatoinToken string   `envconfig:"SLACK_VERIF_TOKEN" doc:"Slack OAUTH token for bot for interactive messages"`
+	SlackVerificationToken string   `envconfig:"SLACK_VERIF_TOKEN" doc:"Slack OAUTH token for bot for interactive messages"`
+	LDAPUrl                string   `envconfig:"LDAP_URL" doc:"URL to connect to LDAP service on"`
+	LDAPPort               string   `envconfig:"LDAP_PORT" doc:"Port to connect to LDAP service on"`
+	LDAPUser               string   `envconfig:"LDAP_USER" doc:"Username to log into LDAP with"`
+	LDAPPass               string   `envconfig:"LDAP_PASS" doc:"Password to log into LDAP with"`
 }
 
 var Constants = constants{}
