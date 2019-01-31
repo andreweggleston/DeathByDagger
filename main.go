@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/rand"
+	"crypto/tls"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -19,6 +20,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	ldap3 "gopkg.in/ldap.v3"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -58,6 +60,11 @@ func main() {
 
 	client := slack.New(config.Constants.SlackBotToken)
 	ldapServ, err := ldap3.Dial("tcp", fmt.Sprintf("%s:%s", config.Constants.LDAPUrl, config.Constants.LDAPPort))
+
+	err = ldapServ.StartTLS(&tls.Config{InsecureSkipVerify: true})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	ldapConf := &helpers.LDAP{
 		L: ldapServ,
