@@ -57,7 +57,7 @@ func main() {
 
 
 	client := slack.New(config.Constants.SlackBotToken)
-	ldapServ, err := ldap3.Dial("tcp", fmt.Sprintf("%s:%d", config.Constants.LDAPUrl, config.Constants.LDAPPort))
+	ldapServ, err := ldap3.Dial("tcp", fmt.Sprintf("%s:%s", config.Constants.LDAPUrl, config.Constants.LDAPPort))
 
 	ldapConf := &helpers.LDAP{
 		L: ldapServ,
