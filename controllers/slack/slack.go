@@ -51,16 +51,16 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
 		logrus.Infof("user not found in db, querying ldap for the slackuid=%s", ev.User)
-		if usernameEntry, err := s.L.SearchForSlackUID(ev.User); err != nil {
+		if usernameEntries, err := s.L.SearchForSlackUID(ev.User); err != nil || len(usernameEntries)==0{
 			logrus.Errorf("Failed to search for slack uid: %s", err)
 			return s.sendMessage("Connect your slack to LDAP with the following url: http://eac.csh.rit.edu", ev.Channel)
 		} else {
-			p, err := player.NewPlayer(usernameEntry.Attributes[0].Values[0])
+			p, err := player.NewPlayer(usernameEntries[0].Attributes[0].Values[0])
 			if err != nil {
 				return s.sendMessage("Something broke... shid", ev.Channel)
 			}
 			p.SlackUserID = ev.User
-			p.Name = usernameEntry.Attributes[1].Values[0]
+			p.Name = usernameEntries[0].Attributes[1].Values[0]
 			databaseDagger.DB.Create(p)
 			return s.sendMessage("You've been added to the game!", ev.Channel)
 		}
