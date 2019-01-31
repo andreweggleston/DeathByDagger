@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/ldap.v3"
 )
 
@@ -12,6 +13,7 @@ type LDAP struct {
 }
 
 func (l *LDAP) SearchForSlackUID(slackUID string) (*ldap.Entry, error) {
+	logrus.Info(l.DN)
 	searchRequest := ldap.NewSearchRequest(l.DN, ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false, fmt.Sprintf("(slackuid=%s)", slackUID), []string{"uid", "cn"},nil)
 	spew.Dump(searchRequest)
 	sr, err := l.L.Search(searchRequest)
