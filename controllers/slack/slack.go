@@ -50,7 +50,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
 
 	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
-		logrus.Info("user not found in db, querying ldap for their username")
+		logrus.Infof("user not found in db, querying ldap for the slackuid=%s", ev.User)
 		if usernameEntry, err := s.L.SearchForSlackUID(ev.User); err != nil {
 			logrus.Errorf("Failed to search for slack uid: %s", err)
 			return s.sendMessage("Connect your slack to LDAP with the following url: http://eac.csh.rit.edu", ev.Channel)
