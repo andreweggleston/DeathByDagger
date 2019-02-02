@@ -46,9 +46,13 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 		return nil
 	}
 
-	logrus.Infof("Incoming message from userid=%s (username=%s):\t%s", ev.User, ev.Username, ev.Msg.Text)
+	p, err := player.GetPlayerBySlackUserID(ev.User)
 
-	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
+	logrus.Infof("Incoming message from userid=%s (username=%s):\t%s", ev.User, p.CSHUsername, ev.Msg.Text)
+
+
+
+	if err != nil {
 		logrus.Infof("user not found in db, querying ldap for slackuid=%s", ev.User)
 		if usernameEntries, err := s.L.SearchForSlackUID(ev.User); err != nil{
 			if s.sendMessage("Couldn't find you in the ldap DB. Have you linked your slack to ldap with http://eac.csh.rit.edu ?", ev.Channel) != nil {
