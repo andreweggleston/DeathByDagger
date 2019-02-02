@@ -48,6 +48,7 @@ func (h *InteractionHandler) SlashHandler(w http.ResponseWriter, r *http.Request
 		}
 		target, err := player.GetPlayerByCSHUsername(p.Target)
 		if err != nil {
+			logrus.Errorf("Couldn't find user's (name=%s) target. %s", p.CSHUsername, err)
 			if h.S.sendMessage("Failed to mark your target for death... Something went wrong on our end.", s.ChannelID) != nil {
 				logrus.Error("Failed to send marktarget message")
 			}
