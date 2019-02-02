@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
 	"github.com/andreweggleston/DeathByDagger/models/player"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -17,6 +16,15 @@ var VerificationToken = config.Constants.SlackVerificationToken
 
 type InteractionHandler struct {
 	S *SlackListener
+}
+
+func (h *InteractionHandler) SlashHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		logrus.Warnf("Invalid Method: %s", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 }
 
 func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,8 +87,9 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 		case "confirm":
 			msg = "You're dead! Sorry!"
 			user.ConfirmOwnMark()
-			assassin.UpdatePlayerData()
-			spew.Dump(assassin)
+			if assassin.UpdatePlayerData() != nil {
+				logrus.Error("Player's evaporated from the db...")
+			}
 			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
 			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", target.SlackUserID, assassin.Kills)
 

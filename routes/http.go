@@ -23,6 +23,7 @@ var httpRoutes = []route{
 	{"/logout", login.LogoutHandler},
 
 	{"/slackinteraction", InteractionHandler.InteractionHandler},
+	{"/slackslash", InteractionHandler.SlashHandler},
 }
 
 func SetupHTTP(mux *http.ServeMux) {
