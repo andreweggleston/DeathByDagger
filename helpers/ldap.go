@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/ldap.v3"
 )
@@ -20,7 +19,6 @@ func (l *LDAP) SearchForSlackUID(slackUID string) ([]*ldap.Entry, error) {
 	if err != nil {
 		return nil, err
 	}
-	spew.Dump(sr)
 	for _, entry := range sr.Entries {
 		fmt.Printf("%s: %v\n", entry.DN, entry.GetAttributeValue("uid"))
 	}
