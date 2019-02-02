@@ -4,7 +4,6 @@ import (
 	"github.com/andreweggleston/DeathByDagger/databaseDagger"
 	"github.com/andreweggleston/DeathByDagger/helpers"
 	"github.com/andreweggleston/DeathByDagger/models/player"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -43,9 +42,7 @@ func (s *SlackListener) ListenAndResponse() {
 
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
-	spew.Dump(ev)
-
-	if ev.SubType == "bot_message" {
+	if ev.SubType != "" && ev.Type == "message" {
 		return nil
 	}
 
