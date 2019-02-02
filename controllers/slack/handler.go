@@ -24,7 +24,73 @@ func (h *InteractionHandler) SlashHandler(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	s, err := slack.SlashCommandParse(r)
 
+	if err != nil {
+		logrus.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if s.ValidateToken(config.Constants.SlackVerificationToken) {
+		logrus.Warn("Verification failed during slash command handling")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	switch s.Command {
+	case "/marktarget":
+		p, err := player.GetPlayerBySlackUserID(s.UserID)
+		if err != nil {
+			if h.S.sendMessage("Either you arent in the DB or something went wrong on our end. If you think this is a mistake, contact an admin.", s.ChannelID) != nil {
+				logrus.Error("Failed to send marktarget message")
+			}
+			return
+		}
+		target, err := player.GetPlayerByCSHUsername(p.Target)
+		if err != nil {
+			if h.S.sendMessage("Failed to mark your target for death... Something went wrong on our end.", s.ChannelID) != nil {
+				logrus.Error("Failed to send marktarget message")
+			}
+			return
+		}
+		target.MarkForDeath()
+		channel, _, _, err := h.S.Client.OpenConversation(&slack.OpenConversationParameters{Users: []string{target.SlackUserID}})
+		if err != nil {
+			logrus.Error("Couldn't open target conversation: ", err)
+			if h.S.sendMessage("Something went wrong when marking your target for death.", s.ChannelID) != nil {
+				logrus.Error("Couldn't send message warning of failed target convo opening.")
+			}
+		}
+		attachment := slack.Attachment{
+			Text:       "Were you killed?",
+			CallbackID: "killConfirm",
+			Actions: []slack.AttachmentAction{
+				{
+					Name:  "confirm",
+					Type:  "button",
+					Text:  "Yes",
+					Value: "confirm",
+				},
+				{
+
+					Name:  "deny",
+					Type:  "button",
+					Text:  "Nope",
+					Value: "deny",
+				},
+			},
+		}
+		if _, _, err := h.S.Client.PostMessage(channel.ID, slack.MsgOptionText("You've been marked for death!", false), slack.MsgOptionAttachments(attachment)); err != nil {
+			_ = h.S.sendMessage("Something went wrong when marking your target for death.", s.ChannelID) //if an error exists here we're fucked
+			logrus.Errorf("failed to post interactive message: %s", err)
+		}
+		if _, _, err := h.S.Client.PostMessage(s.ChannelID, slack.MsgOptionText(fmt.Sprintf("Marked <@%s> as dead. When they confirm that they've been killed, you will recieve your next target.", target.SlackUserID), false)); err != nil {
+			logrus.Errorf("failed to post kill message: %s", err)
+		}
+	default:
+		if h.S.sendMessage("You didn't send an actual message... idiot.", s.ChannelID) != nil {
+			logrus.Error("failed to send message informing of bad slash command")
+		}
+	}
 }
 
 func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.Request) {

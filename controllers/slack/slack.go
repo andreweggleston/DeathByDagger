@@ -1,7 +1,6 @@
 package slack
 
 import (
-	"fmt"
 	"github.com/andreweggleston/DeathByDagger/databaseDagger"
 	"github.com/andreweggleston/DeathByDagger/helpers"
 	"github.com/andreweggleston/DeathByDagger/models/player"
@@ -49,9 +48,6 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 
 	logrus.Infof("Incoming message from userid=%s (username=%s):\n\t%s", ev.User, ev.Username, ev.Msg.Text)
 
-	// Parse message
-	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")
-
 	if _, err := player.GetPlayerBySlackUserID(ev.User); err != nil {
 		logrus.Infof("user not found in db, querying ldap for slackuid=%s", ev.User)
 		if usernameEntries, err := s.L.SearchForSlackUID(ev.User); err != nil{
@@ -76,56 +72,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 			}
 		}
 	}
-
-	switch m[0] {
-	case "killtarget":
-		user, err := player.GetPlayerBySlackUserID(ev.User)
-
-		if err != nil {
-			return err
-		}
-		target, err := player.GetPlayerByCSHUsername(user.Target)
-		if err != nil {
-			return err
-		}
-		target.MarkForDeath()
-		channel, _, _, err := s.Client.OpenConversation(&slack.OpenConversationParameters{Users: []string{target.SlackUserID}})
-		if err != nil {
-			logrus.Error("Couldn't open target conversation: ", err)
-			return s.sendMessage("Something went wrong when marking your target for death.", ev.Channel)
-		}
-		attachment := slack.Attachment{
-			Text:       "Were you killed?",
-			CallbackID: "killConfirm",
-			Actions: []slack.AttachmentAction{
-				{
-					Name:  "confirm",
-					Type:  "button",
-					Text:  "Yes",
-					Value: "confirm",
-				},
-				{
-
-					Name:  "deny",
-					Type:  "button",
-					Text:  "Nope",
-					Value: "deny",
-				},
-			},
-		}
-		if _, _, err := s.Client.PostMessage(channel.ID, slack.MsgOptionText("You've been marked for death!", false), slack.MsgOptionAttachments(attachment)); err != nil {
-			_ = s.sendMessage("Something went wrong when marking your target for death.", ev.Channel) //if an error exists here we're fucked
-			return fmt.Errorf("failed to post interactive message: %s", err)
-		}
-		if _, _, err := s.Client.PostMessage(ev.Channel, slack.MsgOptionText(fmt.Sprintf("Marked <@%s> as dead. When they confirm that they've been killed, you will recieve your next target.", target.SlackUserID), false)); err != nil {
-			return fmt.Errorf("failed to post kill message: %s", err)
-		}
-
-		return nil
-	default:
-		return s.sendMessage("You didn't send an actual command. Idiot.", ev.Channel)
-	}
-
+	return nil
 }
 
 func checkWhitelist(username string) (bool, error) {
