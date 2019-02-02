@@ -1,9 +1,9 @@
 package migrations
 
 import (
+	db "github.com/andreweggleston/DeathByDagger/databaseDagger"
 	"github.com/blang/semver"
 	"github.com/sirupsen/logrus"
-	db "github.com/andreweggleston/DeathByDagger/databaseDagger"
 )
 
 var schemaVersion = semver.Version{

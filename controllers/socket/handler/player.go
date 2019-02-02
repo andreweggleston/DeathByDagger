@@ -81,7 +81,6 @@ var (
 	lastTextBotChange = make(map[uint]time.Time)
 )
 
-
 func (Player) PlayerEnableTextBot(so *wsevent.Client, _ struct{}) interface{} {
 	player := chelpers.GetPlayer(so.Token)
 	if player.PhoneNumber == "" {
@@ -96,7 +95,6 @@ func (Player) PlayerEnableTextBot(so *wsevent.Client, _ struct{}) interface{} {
 	if time.Since(last) < time.Minute {
 		return errors.New("Please wait for a minute before changing the bot's status")
 	}
-
 
 	changeMu.Lock()
 	lastTextBotChange[player.ID] = time.Now()
@@ -126,7 +124,6 @@ func (Player) PlayerDisableTextBot(so *wsevent.Client, _ struct{}) interface{} {
 		return errors.New("Please wait for a minute before changing the bot's status")
 	}
 
-
 	changeMu.Lock()
 	lastTextBotChange[player.ID] = time.Now()
 	changeMu.Unlock()
@@ -139,35 +136,34 @@ func (Player) PlayerDisableTextBot(so *wsevent.Client, _ struct{}) interface{} {
 	return emptySuccess
 }
 
-func (Player) MarkTarget(so *wsevent.Client, _ struct{}) interface{}  {
+func (Player) MarkTarget(so *wsevent.Client, _ struct{}) interface{} {
 	player := chelpers.GetPlayer(so.Token)
 	player.MarkTarget()
 	err := player.Save()
 
-
-	if err != nil{
+	if err != nil {
 		return errors.New("Something broke. Sorry! Contact an admin!")
 	}
 	return emptySuccess
 }
 
-func (Player) ConfirmOwnMark(so *wsevent.Client, _ struct{}) interface{}  {
+func (Player) ConfirmOwnMark(so *wsevent.Client, _ struct{}) interface{} {
 	player := chelpers.GetPlayer(so.Token)
 	player.ConfirmOwnMark()
 	err := player.Save()
 
-	if err != nil{
+	if err != nil {
 		return errors.New("Something broke. Sorry! Contact an admin!")
 	}
 	return emptySuccess
 }
 
-func (Player) DenyOwnMark(so *wsevent.Client, _ struct{}) interface{}  {
+func (Player) DenyOwnMark(so *wsevent.Client, _ struct{}) interface{} {
 	player := chelpers.GetPlayer(so.Token)
 	player.DenyOwnMark()
 	err := player.Save()
 
-	if err != nil{
+	if err != nil {
 		return errors.New("Something broke. Sorry! Contact an admin!")
 	}
 	return emptySuccess

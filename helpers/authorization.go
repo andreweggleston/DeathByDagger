@@ -30,9 +30,9 @@ const (
 	ActionBanChat
 	ActionChangeRole
 	ActionViewLogs
-	ActionViewPage //view admin pages
+	ActionViewPage  //view admin pages
 	ActionDeleteChat
-	ModifyServers //add/remove servers
+	ModifyServers  //add/remove servers
 )
 
 var ActionNames = map[authority.AuthAction]string{

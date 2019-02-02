@@ -2,8 +2,8 @@ package socket
 
 import (
 	"errors"
+	"github.com/andreweggleston/DeathByDagger/helpers/wsevent"
 	"github.com/andreweggleston/DeathByDagger/routes/socket/middleware"
-	wsevent "github.com/andreweggleston/DeathByDagger/helpers/wsevent"
 )
 
 var (

@@ -32,12 +32,11 @@ func init() {
 func NewToken(player *player.Player) string {
 	token := jwt.New(jwt.SigningMethodHS512)
 	token.Claims = DaggerClaims{
-		PlayerID:  		player.ID,
-		CSHUsername:	player.CSHUsername,
-		Role: 			player.Role,
-		IssuedAt: 		time.Now().Unix(),
-		Issuer: 		config.Constants.PublicAddress,
-
+		PlayerID:    player.ID,
+		CSHUsername: player.CSHUsername,
+		Role:        player.Role,
+		IssuedAt:    time.Now().Unix(),
+		Issuer:      config.Constants.PublicAddress,
 	}
 
 	str, err := token.SignedString([]byte(signingKey))

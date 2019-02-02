@@ -5,7 +5,7 @@ import (
 	"github.com/andreweggleston/DeathByDagger/models/player"
 )
 
-type Unauth struct {}
+type Unauth struct{}
 
 func (Unauth) Name(s string) string {
 	return string((s[0])+32) + s[1:]

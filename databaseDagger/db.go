@@ -9,23 +9,23 @@ import (
 )
 
 var (
-	DB		*gorm.DB
-	dbMutex		sync.Mutex
-	initialized	= false
-	DBUrl		url.URL
+	DB          *gorm.DB
+	dbMutex     sync.Mutex
+	initialized = false
+	DBUrl       url.URL
 )
 
 func Init() {
 	dbMutex.Lock()
 	defer dbMutex.Unlock()
 
-	if initialized{
+	if initialized {
 		return
 	}
 
 	DBUrl = url.URL{
-		Scheme:	"postgres",
-		Host:	config.Constants.DbAddr,
+		Scheme:   "postgres",
+		Host:     config.Constants.DbAddr,
 		RawQuery: "sslmode=disable",
 	}
 

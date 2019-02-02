@@ -7,10 +7,10 @@ import (
 )
 
 var (
-	socketsMu        = new(sync.RWMutex)
-	IDSockets   = make(map[string][]*wsevent.Client) //id -> client array, since players can have multiple tabs open
-	connectedMu      = new(sync.Mutex)
-	connectedTimer   = make(map[string]*time.Timer)
+	socketsMu      = new(sync.RWMutex)
+	IDSockets      = make(map[string][]*wsevent.Client) //id -> client array, since players can have multiple tabs open
+	connectedMu    = new(sync.Mutex)
+	connectedTimer = make(map[string]*time.Timer)
 )
 
 func AddSocket(cshusername string, so *wsevent.Client) {

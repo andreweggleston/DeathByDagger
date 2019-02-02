@@ -10,7 +10,7 @@ import (
 
 func RegisterHandlers() {
 	socket.AuthServer.OnDisconnect = hooks.OnDisconnect
-	socket.UnauthServer.OnDisconnect = func(string, *jwt.Token) {pprof.Clients.Add(-1)}
+	socket.UnauthServer.OnDisconnect = func(string, *jwt.Token) { pprof.Clients.Add(-1) }
 
 	socket.AuthServer.Register(handler.Global{})
 	socket.AuthServer.Register(handler.Player{})

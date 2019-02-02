@@ -2,8 +2,8 @@ package controllerhelpers
 
 import (
 	"errors"
-	"github.com/andreweggleston/DeathByDagger/helpers/authority"
 	db "github.com/andreweggleston/DeathByDagger/databaseDagger"
+	"github.com/andreweggleston/DeathByDagger/helpers/authority"
 	"github.com/andreweggleston/DeathByDagger/models/player"
 )
 
@@ -21,8 +21,8 @@ func playerExists(id uint, CSHUsername string) bool {
 	return count != 0
 }
 
-func (c DaggerClaims) Valid() error{
-	if !playerExists(c.PlayerID, c.CSHUsername){
+func (c DaggerClaims) Valid() error {
+	if !playerExists(c.PlayerID, c.CSHUsername) {
 		return errors.New("player not found")
 	}
 	return nil

@@ -13,6 +13,5 @@ func Do() {
 	databaseDagger.DB.AutoMigrate(&player.Player{})
 	databaseDagger.DB.AutoMigrate(&Constant{})
 
-
 	once.Do(checkSchema)
 }

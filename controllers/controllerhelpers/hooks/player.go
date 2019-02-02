@@ -18,7 +18,7 @@ func AfterConnectLoggedIn(so *wsevent.Client, player *player.Player) {
 	sessions.AddSocket(player.CSHUsername, so)
 
 	err := player.UpdatePlayerData()
-	if err != nil{
+	if err != nil {
 		logrus.Error(err)
 	}
 

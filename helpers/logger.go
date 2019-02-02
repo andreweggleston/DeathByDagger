@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/facebookgo/stack"
+	"github.com/sirupsen/logrus"
 )
 
 type formatter struct{}

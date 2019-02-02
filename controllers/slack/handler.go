@@ -173,7 +173,7 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 			logrus.Errorf("Error while posting response to interactive message: %s", err)
 		}
 
-		channel, _, _, err := h.S.Client.OpenConversation(&slack.OpenConversationParameters{Users:[]string{assassin.SlackUserID}})
+		channel, _, _, err := h.S.Client.OpenConversation(&slack.OpenConversationParameters{Users: []string{assassin.SlackUserID}})
 		if err != nil {
 			logrus.Errorf("Error while posting response to interactive message: %s", err)
 			return
@@ -182,7 +182,6 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 		if err != nil {
 			logrus.Errorf("Error while posting response to interactive message: %s", err)
 		}
-
 
 		return
 	}

@@ -27,9 +27,9 @@ func (Global) GetConstant(so *wsevent.Client, args struct {
 	return newResponse(output)
 }
 
-func (Global) SendToOtherClients(so *wsevent.Client, args struct{
+func (Global) SendToOtherClients(so *wsevent.Client, args struct {
 	Event string `json:"event"`
-	Data string `json:"data"`
+	Data  string `json:"data"`
 }) interface{} {
 	ID := so.Token.Claims.(*chelpers.DaggerClaims).CSHUsername
 	broadcaster.SendMessageSkipIDs(so.ID, ID, args.Event, args.Data)

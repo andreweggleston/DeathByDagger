@@ -18,23 +18,23 @@ import (
 )
 
 type UserInfo struct {
-	UserInfo	User	`json:"userinfo"`
+	UserInfo User `json:"userinfo"`
 }
 
 type User struct {
-	Sub           string `json:"sub"`
-	Username       string `json:"preferred_username"`
-	GivenName     string `json:"given_name"`
-	FamilyName    string `json:"family_name"`
-	Email         string `json:"email"`
+	Sub        string `json:"sub"`
+	Username   string `json:"preferred_username"`
+	GivenName  string `json:"given_name"`
+	FamilyName string `json:"family_name"`
+	Email      string `json:"email"`
 }
 
 var (
 	conf = &oauth2.Config{
-		ClientID:config.Constants.OpenIDClientID,
-		ClientSecret:config.Constants.OpenIDClientSec,
-		RedirectURL:"http://"+config.Constants.LoginRedirectPath+"/callback",
-		Scopes:[]string{"openid, profile"},
+		ClientID:     config.Constants.OpenIDClientID,
+		ClientSecret: config.Constants.OpenIDClientSec,
+		RedirectURL:  "http://" + config.Constants.LoginRedirectPath + "/callback",
+		Scopes:       []string{"openid, profile"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://" + config.Constants.OpenIDUrl + "/auth",
 			TokenURL: "https://" + config.Constants.OpenIDUrl + "/token",
@@ -66,7 +66,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	client := conf.Client(context.TODO(), tok)
 
-	resp, err := client.Get("https://"+config.Constants.OpenIDUrl+"/userinfo")
+	resp, err := client.Get("https://" + config.Constants.OpenIDUrl + "/userinfo")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -81,7 +81,6 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		logrus.Fatal(err)
 	}
 
-
 	p, err := player.GetPlayerByCSHUsername(user.Username)
 	if err != nil {
 
@@ -91,7 +90,6 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 		databaseDagger.DB.Create(p)
 	}
-
 
 	key := controllerhelpers.NewToken(p)
 	cookie := &http.Cookie{
