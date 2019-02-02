@@ -10,7 +10,6 @@ import (
 )
 
 var ErrPlayerNotFound = errors.New("Player not found")
-var ErrPlayerInReportedSlot = errors.New("Player in reported slot")
 
 type Player struct {
 	ID          uint   `gorm:"primary_key" json:"id"`
@@ -40,7 +39,7 @@ type GlobalData struct {
 	Announcement string
 }
 
-func NewPlayer(cshusername string) (*Player, error) {
+func NewPlayer(cshusername string) *Player {
 	player := &Player{CSHUsername: cshusername, Kills: 0}
 
 	//check if admin todo
@@ -49,7 +48,7 @@ func NewPlayer(cshusername string) (*Player, error) {
 
 	db.DB.Model(&Player{}).Last(last)
 
-	return player, nil
+	return player
 }
 
 func (p *Player) Alias() string {
@@ -127,7 +126,6 @@ func (player *Player) SetSetting(key string, value string) {
 func (player *Player) MarkForDeath() {
 	player.MarkedForDeath = true
 	player.Save()
-	//TODO: notify via slack or text
 }
 
 func (player *Player) MarkTarget() error {
@@ -172,8 +170,6 @@ func (player *Player) UpdatePlayerData() error {
 		}
 		player.Target = target.Target
 		player.Kills = player.Kills + 1
-
-		//TODO: notify via slack or text
 
 	}
 	return nil

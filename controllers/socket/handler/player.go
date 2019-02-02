@@ -97,7 +97,6 @@ func (Player) PlayerEnableTextBot(so *wsevent.Client, _ struct{}) interface{} {
 		return errors.New("Please wait for a minute before changing the bot's status")
 	}
 
-	//TODO: textBot.add(player.PhoneNumber)
 
 	changeMu.Lock()
 	lastTextBotChange[player.ID] = time.Now()
@@ -127,7 +126,6 @@ func (Player) PlayerDisableTextBot(so *wsevent.Client, _ struct{}) interface{} {
 		return errors.New("Please wait for a minute before changing the bot's status")
 	}
 
-	//TODO: textBot.remove(player.PhoneNumber)
 
 	changeMu.Lock()
 	lastTextBotChange[player.ID] = time.Now()

@@ -85,13 +85,8 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	p, err := player.GetPlayerByCSHUsername(user.Username)
 	if err != nil {
 
-		p, err = player.NewPlayer(user.Username)
+		p = player.NewPlayer(user.Username)
 
-		if err != nil {
-			logrus.Error(err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
 		p.Name = user.GivenName + " " + user.FamilyName
 
 		databaseDagger.DB.Create(p)

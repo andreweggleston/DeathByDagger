@@ -25,5 +25,9 @@ func (l *LDAP) SearchForSlackUID(slackUID string) ([]*ldap.Entry, error) {
 		fmt.Printf("%s: %v\n", entry.DN, entry.GetAttributeValue("uid"))
 	}
 
+	if len(sr.Entries) == 0 {
+		return nil, fmt.Errorf("failed to find slackuid=%s in ldap db", slackUID)
+	}
+
 	return sr.Entries, nil
 }
