@@ -31,6 +31,10 @@ func (h *InteractionHandler) SlashHandler(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	logrus.Info("Token from slack: ", s.Token)
+	logrus.Info("Our token;; ", config.Constants.SlackVerificationToken)
+
 	if s.ValidateToken(config.Constants.SlackVerificationToken) {
 		logrus.Warn("Verification failed during slash command handling")
 		w.WriteHeader(http.StatusUnauthorized)
