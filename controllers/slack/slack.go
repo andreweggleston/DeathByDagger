@@ -47,8 +47,11 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	}
 
 	p, err := player.GetPlayerBySlackUserID(ev.User)
-
-	logrus.Infof("Incoming message from userid=%s (username=%s):\t%s", ev.User, p.CSHUsername, ev.Msg.Text)
+	if err != nil{
+		logrus.Infof("Incoming message from userid=%s (username=unknown):\t%s", ev.User, ev.Msg.Text)
+	} else {
+		logrus.Infof("Incoming message from userid=%s (username=%s):\t%s", ev.User, p.CSHUsername, ev.Msg.Text)
+	}
 
 	if err != nil {
 		logrus.Infof("user not found in db, querying ldap for slackuid=%s", ev.User)
