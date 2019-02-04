@@ -66,7 +66,7 @@ func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 				p.SlackUserID = ev.User
 				p.Name = usernameEntries[0].Attributes[1].Values[0]
 				databaseDagger.DB.Create(p)
-				if s.sendMessage("You've been added to the game!", ev.Channel) != nil {
+				if s.sendMessage("You've been added to the game! When you kill your target issue `/marktarget` to mark your target, after which they will confirm or deny they've been killed.", ev.Channel) != nil {
 					logrus.Error("Failed to send success message")
 				}
 				return nil
