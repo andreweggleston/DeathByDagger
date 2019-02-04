@@ -88,6 +88,24 @@ func (h *InteractionHandler) SlashHandler(w http.ResponseWriter, r *http.Request
 		if _, _, err := h.S.Client.PostMessage(s.ChannelID, slack.MsgOptionText(fmt.Sprintf("Marked <@%s> as dead. When they confirm that they've been killed, you will recieve your next target.", target.SlackUserID), false)); err != nil {
 			logrus.Errorf("failed to post kill message: %s", err)
 		}
+	case "/target":
+		p, err := player.GetPlayerBySlackUserID(s.UserID)
+		if err != nil{
+			if h.S.sendMessage("Either you arent in the DB or something went wrong on our end. If you think this is a mistake, contact an admin.", s.ChannelID) != nil {
+				logrus.Error("Failed to send marktarget message")
+			}
+			return
+		}
+		t, err := player.GetPlayerByCSHUsername(p.Target)
+		if err != nil {
+			if h.S.sendMessage("Something went wrong on our end. Message an admin if this occurs again.", s.ChannelID) != nil {
+				logrus.Error("Failed to send marktarget message")
+			}
+			return
+		}
+		if h.S.sendMessage(fmt.Sprintf("Your target is <@%s> (%s)", t.SlackUserID, t.CSHUsername), s.ChannelID) != nil {
+			logrus.Error("Failed to send marktarget message")
+		}
 	default:
 		if h.S.sendMessage("You didn't send an actual message... idiot.", s.ChannelID) != nil {
 			logrus.Error("failed to send message informing of bad slash command")
