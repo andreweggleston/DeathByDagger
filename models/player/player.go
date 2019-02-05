@@ -163,6 +163,7 @@ func (player *Player) TargetIsDead() bool {
 }
 func (player *Player) UpdatePlayerData() error {
 	defer player.Save()
+	logrus.Infof("Updating player data for %s", player.CSHUsername)
 	if player.TargetIsDead() {
 		target, err := GetPlayerByCSHUsername(player.Target)
 		if err != nil {
