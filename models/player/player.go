@@ -165,6 +165,7 @@ func (player *Player) UpdatePlayerData() error {
 	defer player.Save()
 	logrus.Infof("Updating player data for %s", player.CSHUsername)
 	if player.TargetIsDead() {
+		logrus.Infof("%s's target is dead!", player.CSHUsername)
 		target, err := GetPlayerByCSHUsername(player.Target)
 		if err != nil {
 			return err
