@@ -95,7 +95,8 @@ func (h *InteractionHandler) SlashHandler(w http.ResponseWriter, r *http.Request
 				logrus.Error("Failed to send marktarget message")
 			}
 			return
-		} else if p.UpdatePlayerData() != nil {
+		}
+		if p.UpdatePlayerData() != nil {
 			if h.S.sendMessage("Something went wrong on our end. Message an admin if this occurs again. If this happens at the beginning of the game, your target probably hasn't logged in yet.", s.ChannelID) != nil {
 				logrus.Error("Failed to send marktarget message")
 			}
