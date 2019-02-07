@@ -178,11 +178,11 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 		switch message.ActionCallback.Actions[0].Value {
 		case "confirm":
 			msg = "You're dead! Sorry!"
+			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
 			user.ConfirmOwnMark()
 			if assassin.UpdatePlayerData() != nil {
 				logrus.Error("Player's evaporated from the db...")
 			}
-			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
 			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", target.SlackUserID, assassin.Kills)
 
 		case "deny":

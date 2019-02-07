@@ -139,6 +139,7 @@ func (player *Player) MarkTarget() error {
 func (player *Player) ConfirmOwnMark() {
 	if player.MarkedForDeath {
 		player.Killed = true
+		player.Target = ""
 		player.Save()
 	}
 }
