@@ -91,7 +91,7 @@ func GetPlayerByCSHUsername(cshusername string) (*Player, error) {
 
 func GetPlayerByTarget(target string) (*Player, error) {
 	var player = Player{}
-	err := db.DB.Where("target = ?", target).First(&player).Error
+	err := db.DB.Where("target = ? AND killed = false" , target).First(&player).Error
 	if err != nil {
 		return nil, ErrPlayerNotFound
 	}
@@ -139,7 +139,6 @@ func (player *Player) MarkTarget() error {
 func (player *Player) ConfirmOwnMark() {
 	if player.MarkedForDeath {
 		player.Killed = true
-		player.Target = ""
 		player.Save()
 	}
 }

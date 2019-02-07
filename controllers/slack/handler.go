@@ -178,19 +178,18 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 		switch message.ActionCallback.Actions[0].Value {
 		case "confirm":
 			msg = "You're dead! Sorry!"
-			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
 			user.ConfirmOwnMark()
 
 			if assassin.UpdatePlayerData() != nil {
 				logrus.Error("Player's evaporated from the db...")
 			}
 
-			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", target.SlackUserID, assassin.Kills)
+			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", assassin.Target, assassin.Kills)
 
 		case "deny":
 			msg = "You've denied your mark. Keep playing!"
 			user.DenyOwnMark()
-			msg2 = "Your target claims they weren't killed. If you believe this is'nt true, contact an admin."
+			msg2 = "Your target claims they weren't killed. If you believe this isn't true, contact an admin."
 		default:
 			logrus.Warn("Recieved a response value from callback that wasn't expected")
 		}
