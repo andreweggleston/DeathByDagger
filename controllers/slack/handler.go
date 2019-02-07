@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/andreweggleston/DeathByDagger/config"
+	"github.com/andreweggleston/DeathByDagger/databaseDagger"
 	"github.com/andreweggleston/DeathByDagger/models/player"
 	"github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
@@ -180,9 +181,27 @@ func (h *InteractionHandler) InteractionHandler(w http.ResponseWriter, r *http.R
 			msg = "You're dead! Sorry!"
 			target, _ := player.GetPlayerByCSHUsername(assassin.Target)
 			user.ConfirmOwnMark()
+
+			rows, _ := databaseDagger.DB.Model(&player.Player{}).Select("slack_user_id").Rows()
+			defer rows.Close()
+			for rows.Next() {
+				var slackuserid string
+				databaseDagger.DB.ScanRows(rows, &slackuserid)
+				channel, _, _, err := h.S.Client.OpenConversation(&slack.OpenConversationParameters{Users: []string{slackuserid}})
+				if err != nil {
+					logrus.Errorf("Error while broadcasting death: %s", err)
+					return
+				}
+				_, _, err = h.S.Client.PostMessage(channel.ID, slack.MsgOptionText(fmt.Sprintf("Ding, dong! <@%s> has died. Sad!", user.SlackUserID), false))
+				if err != nil {
+					logrus.Errorf("Error while broadcasting death: %s", err)
+				}
+			}
+
 			if assassin.UpdatePlayerData() != nil {
 				logrus.Error("Player's evaporated from the db...")
 			}
+
 			msg2 = fmt.Sprintf("Your new target is <@%s>, and you now have %d kills", target.SlackUserID, assassin.Kills)
 
 		case "deny":
