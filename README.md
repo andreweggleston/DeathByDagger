@@ -36,7 +36,7 @@ The cookies fields are deprecated, but if you want to create a frontend, there a
 You'll need to get the LDAP creds for the program from an RTP.
 ### Slack integration
 If you choose to go the slackbot route, you'll need the bot id, token, and a separate token to verify that the message actually came from slack.
-All of that data cna be found at Slack's [bot dashboard](api.slack.com/apps), after you've created your bot.
+All of that data cna be found at Slack's [bot dashboard](https://api.slack.com/apps), after you've created your bot.
 ### Database
 Honestly very easy, just set up a PostgreSQL database with username/password that you set variables for. Check out PGSQL docs for help with that.
 ### Running the app
