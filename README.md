@@ -1,5 +1,6 @@
 # DeathByDagger
-CSH annual Death by Dagger backend and slack bot. Written in Go.
+## What is this?
+CSH annual Death by Dagger backend and slack bot. Written in Go. Death by Dagger is a game where players try to assassinate (poke) each other. Each player is assigned another in a large circularly linked list. In the past, Death by Dagger has been managed by hand by gamemasters. This program makes it easier to manage players.
 
 ## Requirements
 * Go >= 1.10
@@ -38,7 +39,7 @@ You'll need to get the LDAP creds for the program from an RTP.
 If you choose to go the slackbot route, you'll need the bot id, token, and a separate token to verify that the message actually came from slack.
 All of that data cna be found at Slack's [bot dashboard](https://api.slack.com/apps), after you've created your bot.
 ### Database
-Honestly very easy, just set up a PostgreSQL database with username/password that you set variables for. Check out PGSQL docs for help with that.
+Honestly very easy, just create a PostgreSQL database with username/password that you set variables for. Check out PGSQL docs for help with that.
 ### Running the app
 Make sure you got thos ~~Beans~~ environment variables, then:
 1. `go get andreweggleston/DeathByDagger`
@@ -58,3 +59,7 @@ Helpers in [models](../blob/master/helpers)
 3. Commit and push your changes. (`git commit` and then `git push origin branch_name`).
 4. Make a PR.
 Before making a PR, make your code matches Go style guidlines (just run `go fmt`), and squash your commits.
+
+## Why I made it this way / What I learned
+I wanted to learn Go in more than just a basic sense, and didn't have experience with databases at all. The amounts of players are nowhere near the amount that a PSQL database is needed at, but it seemed like a good idea to learn at least the syntax to interact with databases.
+As far as why I made it this way, the structure of the project itself follows that of a normal web project, as I outlined above.
